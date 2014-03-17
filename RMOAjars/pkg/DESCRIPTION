@@ -1,0 +1,20 @@
+Package: RMOAjars
+Version: 1.0
+Title: External jars required for package RMOA.
+Authors@R: c(person("Jan", "Wijffels", role = c("aut", "cre"), email =
+    "jwijffels@bnosac.be"))
+Description: External jars required for package RMOA. RMOA is a framework to
+    build data stream models on top of MOA
+Depends:
+    R (>= 2.6.0)
+Imports:
+    rJava (>= 0.6-3)
+SystemRequirements: Java (>= 5.0)
+License: GPL-3
+Copyright: MOA and WEKA code in inst/java/moa.jar is Copyright (C) The
+    University of Waikato. Other code is Copyright (C) BNOSAC.
+Author: Jan Wijffels [aut, cre]
+Maintainer: Jan Wijffels <jwijffels@bnosac.be>
+URL: http://www.bnosac.be, http://moa.cms.waikato.ac.nz/
+Collate:
+    'onLoad.R'
