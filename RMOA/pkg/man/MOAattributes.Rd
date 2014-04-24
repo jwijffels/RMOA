@@ -1,0 +1,25 @@
+\name{MOAattributes}
+\alias{MOAattributes}
+\title{Define the attributes of a dataset (factor levels, numeric or string data) in a MOA setting}
+\usage{
+MOAattributes(data, ...)
+}
+\arguments{
+  \item{data}{object of class data.frame}
+
+  \item{...}{other parameters currently not used yet}
+}
+\value{
+An object of class \code{MOAmodelAttributes}
+}
+\description{
+Define the attributes of a dataset (factor levels, numeric
+or string data) in a MOA setting
+}
+\examples{
+data(iris)
+mydata <- factorise(iris)
+atts <- MOAattributes(data=mydata)
+atts
+}
+

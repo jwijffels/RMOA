@@ -1,0 +1,17 @@
+Package: RMOA
+Version: 1.0
+Title: Connect R with MOA to run streaming classifications, clustering, outlier
+    detection, recommendation engines and regression on streaming data.
+Authors@R: c(person("Jan", "Wijffels", role = c("aut", "cre"), email =
+    "jwijffels@bnosac.be"))
+Description: Connect R with MOA to run streaming classifications, clustering,
+    outlier detection, recommendation engines and regression on streaming data.
+Depends:
+    RMOAjars (>= 1.0),
+    rJava
+SystemRequirements: Java (>= 5.0)
+License: GPL-3
+Copyright: Code is Copyright (C) BNOSAC.
+Author: Jan Wijffels [aut, cre]
+Maintainer: Jan Wijffels <jwijffels@bnosac.be>
+URL: http://www.bnosac.be, http://moa.cms.waikato.ac.nz/

@@ -1,0 +1,25 @@
+\name{factorise}
+\alias{factorise}
+\title{Convert character strings to factors in a dataset}
+\usage{
+factorise(x, ...)
+}
+\arguments{
+  \item{x}{object of class data.frame}
+
+  \item{...}{other parameters currently not used yet}
+}
+\value{
+a data.frame with the information in \code{x} where
+character columns are converted to factors
+}
+\description{
+Convert character strings to factors in a dataset
+}
+\examples{
+data(iris)
+str(iris)
+mydata <- factorise(iris)
+str(mydata)
+}
+

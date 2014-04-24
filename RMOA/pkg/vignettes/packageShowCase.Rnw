@@ -1,0 +1,55 @@
+%\VignetteIndexEntry{R interface to MOA for data stream mining}
+
+\documentclass[nojss]{jss}
+\title{R interface to MOA \\ Data stream mining}
+\author{Jan Wijffels}
+\Plainauthor{Jan Wijffels}
+\Plaintitle{R interface to MOA - Data stream mining}
+\Abstract{
+This package allows R users to connect to MOA in order to build, score and evaluate data stream models (\url{http://http://moa.cms.waikato.ac.nz/}).\\
+MOA allows to build classification and clustering models as well as does identification of outliers and allows building recommendation systems on streaming data.\\
+For more information on setting up data stream models, contact the author.
+}
+\Keywords{MOA, Data stream mining}
+\Plainkeywords{MOA, Data stream mining}
+
+\Address{
+  BNOSAC\\
+  Belgium Network of Open Source Analytical Consultants\\
+  Limnanderstraat 26, 1070 Anderlecht, Belgium\\
+  E-mail: \email{jwijffels@bnosac.be}\\
+  URL: \url{http://www.bnosac.be}\\
+  Tel: +32 486 611708
+}
+
+\begin{document}
+\SweaveOpts{concordance=TRUE}
+
+<<preliminaries, echo=FALSE, results=hide>>=
+options(prompt = "R> ", continue = "+   ")
+options(prompt = " ", continue = "   ")
+set.seed(123456789)
+@
+
+\subsection{GitHub - package repository}
+The development of this package is done by BNOSAC and is available on github at \url{https://github.com/jwijffels/RMOA}
+
+\subsection{BNOSAC}
+BNOSAC, is a Belgium consultancy network specialized in open source analytical intelligence. We gather a group of dedicated open source software engineers with a focus on data mining, business intelligence, statistical engineering and advanced artificial intelligence.
+\begin{center}
+\includegraphics[width=5cm]{logo_bnosac.png}
+\end{center}
+We are experts in using analytical open source software and provide expertise, consultancy and training for the use of well-established open source tools like R, Python, Hadoop, Pentaho, PostgreSQL, OpenBugs, PostGIS and Mapserver in your organisation.
+Our main areas of focus are:
+\begin{enumerate}
+\item{Standard data mining}
+\item{Spatial data mining}
+\item{Business intelligence}
+\item{Web \& Text mining}
+\item{Biostatistics \& statistical consulting}
+\item{Training and support}
+\end{enumerate}
+We supply you with the knowledge, the technology and the practical skills to efficiently boost your business through analytical problem-solving. Our open source expertise allows us to combine a low price for high quality while integrating the latest no-nonsense statistical developments in your business setting. \\
+We consider ourselves as helpers. We aid in setting up analytical platforms, statistical servers, data marts, help you integrate these applications in your operational systems and let you understand and apply the analytical techniques that can leverage your strategic business goals.
+
+\end{document}
