@@ -1,6 +1,7 @@
 modelclass <- function(model){
   knownmodels <- c("AdaHoeffdingOptionTree", "ASHoeffdingTree", "DecisionStump", "HoeffdingAdaptiveTree", "HoeffdingOptionTree",
-                   "HoeffdingTree", "LimAttHoeffdingTree", "RandomHoeffdingTree", "NaiveBayes")
+                   "HoeffdingTree", "LimAttHoeffdingTree", "RandomHoeffdingTree", 
+                   "NaiveBayes", "NaiveBayesMultinomial")
   if(!model %in% knownmodels){
     stop(sprintf("%s not an implemented model", as.character(model)))
   }
@@ -13,7 +14,8 @@ modelclass <- function(model){
                    "HoeffdingTree",
                    "LimAttHoeffdingTree", 
                    "RandomHoeffdingTree",
-                   "NaiveBayes"),
+                   "NaiveBayes",
+                   "NaiveBayesMultinomial"),
           to = c("moa/classifiers/trees/AdaHoeffdingOptionTree",
                  "moa/classifiers/trees/ASHoeffdingTree",
                  "moa/classifiers/trees/DecisionStump",
@@ -22,6 +24,7 @@ modelclass <- function(model){
                  "moa/classifiers/trees/HoeffdingTree", 
                  "moa/classifiers/trees/LimAttHoeffdingTree", 
                  "moa/classifiers/trees/RandomHoeffdingTree", 
-                 "moa/classifiers/bayes/NaiveBayes"))
+                 "moa/classifiers/bayes/NaiveBayes",
+                 "moa/classifiers/bayes/NaiveBayesMultinomial"))
 }
 
