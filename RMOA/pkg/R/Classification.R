@@ -18,7 +18,6 @@ HoeffdingTree <- function(...) {
   out$moamodel <- .jnew(modelclass(out$type))  
   ## Set MOA options
   out$options <- MOAoptions(out, ...)  
-  out$response <- character(0)
   ## And prepare for usage
   #.jcall(out$moamodel, "V", "prepareForUse")
   out
