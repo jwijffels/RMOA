@@ -103,7 +103,10 @@ summary.MOA_classifier <- function(object, ...){
   out$type <- object$type
   out$options <- object$options$options
   out$fields <- fields(object)[c("attributes","attribute.names","response","responselevels")]
-  cat(out$type, sep="\n")
+  cat(out$type, sep="\n")  
+  cat(sprintf("response: %s", out$fields$response), sep="\n")
+  cat(sprintf("responselevels: %s", paste(out$fields$responselevels, collapse=", ")), sep="\n")
+  cat(sprintf("data features: %s", paste(out$fields$attribute.names, collapse=", ")), sep="\n")
   cat(sprintf("Model has trained: %s", out$trainingHasStarted), sep="\n")
   #print.MOAmodelOptions(out$options)  
   invisible(out)
