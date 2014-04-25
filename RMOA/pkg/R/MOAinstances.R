@@ -26,6 +26,7 @@ MOAattributes.data.frame <- function(data, ...){
   nrattributes <- as.integer(ncol(data))
   attributes <- .jnew("java.util.ArrayList", nrattributes)
   levs <- list()
+  allattributes <- list()
   for(attr in names(data)){    
     alllevels <- levels(data[[attr]])
     if(length(alllevels) > 0){
@@ -34,12 +35,14 @@ MOAattributes.data.frame <- function(data, ...){
       levs[[attr]] <- character(0)
     }    
     if(inherits(data[[attr]], "factor")){
-      attributes$add(.jnew("weka/core/Attribute", attr, as.java.util.List(alllevels)))      
+      att <- .jnew("weka/core/Attribute", attr, as.java.util.List(alllevels))
     }else{
-      attributes$add(.jnew("weka/core/Attribute", attr))
+      att <- .jnew("weka/core/Attribute", attr)      
     }
+    attributes$add(att)
+    allattributes[[attr]] <- att
   }
-  out <- list(columnattributes = attributes, levels = levs)
+  out <- list(columnattributes = attributes, levels = levs, attributes = allattributes)
   class(out) <- "MOAmodelAttributes"
   out  
 }
