@@ -78,6 +78,37 @@ trainMOA <- function(data, model, class, reset=TRUE, ...){
   invisible(model)
 } 
 
+#' Summary statistics of a MOA classifier 
+#'
+#' Summary statistics of a MOA classifier 
+#'
+#' @param object an object of class  \code{MOA_classifier}
+#' @param ... other arguments, currently not used yet
+#' @return the form of the return value depends on the type of MOA model
+#' @export 
+#' @S3method summary MOA_classifier
+#' @examples
+#' hdt <- HoeffdingTree(numericEstimator = "GaussianNumericAttributeClassObserver")
+#' hdt
+#' data(iris)
+#' iris <- iris[c("Species","Sepal.Length","Sepal.Width","Petal.Length","Petal.Width")]
+#' iris <- factorise(iris)
+#' trainMOA(data=iris[sample(nrow(iris), size=round(nrow(iris)/2), replace=TRUE), ], 
+#'          model=hdt, class="Species")
+#' summary(hdt)
+summary.MOA_classifier <- function(object, ...){
+  out <- list()
+  out$trainingHasStarted <- .jcall(object$moamodel, "Z", "trainingHasStarted")
+  out$isRandomizable <- .jcall(object$moamodel, "Z", "isRandomizable")
+  out$type <- object$type
+  out$options <- object$options$options
+  out$fields <- fields(object)[c("attributes","attribute.names","response","responselevels")]
+  cat(out$type, sep="\n")
+  cat(sprintf("Model has trained: %s", out$trainingHasStarted), sep="\n")
+  #print.MOAmodelOptions(out$options)  
+  invisible(out)
+}
+
 
 
 #' Predict using a MOA classifier
@@ -147,5 +178,6 @@ fields.MOA_classifier <- function(x){
   while(levs$hasMoreElements()){
     out$responselevels <- append(out$responselevels, levs$nextElement())
   }  
+  class(out) <- "fields"
   out
 }
