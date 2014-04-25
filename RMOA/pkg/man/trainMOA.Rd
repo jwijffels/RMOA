@@ -27,6 +27,7 @@ Train a MOA classifier, like e.g. a HoeffdingTree
 hdt <- HoeffdingTree(numericEstimator = "GaussianNumericAttributeClassObserver")
 hdt
 data(iris)
+iris <- iris[c("Species","Sepal.Length","Sepal.Width","Petal.Length","Petal.Width")]
 iris <- factorise(iris)
 trainMOA(data=iris[sample(nrow(iris), size=10, replace=TRUE), ], model=hdt, class="Species")
 hdt

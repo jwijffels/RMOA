@@ -20,7 +20,7 @@ HoeffdingTree <- function(...) {
   out$options <- MOAoptions(out, ...)  
   out$response <- character(0)
   ## And prepare for usage
-  .jcall(out$moamodel, "V", "prepareForUse")
+  #.jcall(out$moamodel, "V", "prepareForUse")
   out
 }
 
@@ -47,14 +47,19 @@ print.MOA_classifier <- function(x, ...){
 #' hdt <- HoeffdingTree(numericEstimator = "GaussianNumericAttributeClassObserver")
 #' hdt
 #' data(iris)
+#' iris <- iris[c("Species","Sepal.Length","Sepal.Width","Petal.Length","Petal.Width")]
 #' iris <- factorise(iris)
 #' trainMOA(data=iris[sample(nrow(iris), size=10, replace=TRUE), ], model=hdt, class="Species")
 #' hdt
 trainMOA <- function(data, model, class, reset=TRUE, ...){    
+  if(class != colnames(data)[1]){
+    stop(sprintf("In MOA, you need to put your column to predict (%s) as the first column in your provided data data.frame", class))
+  }
   atts <- MOAattributes(data=data)
   allinstances <- .jnew("weka.core.Instances", "data", atts$columnattributes, 1L)
   ## Set the response data to predict
   .jcall(allinstances, "V", "setClassIndex", attribute(atts, class)$pos)
+  .jcall(allinstances, "V", "setClass", attribute(atts, class)$attribute)
   ## Prepare for usage
   .jcall(model$moamodel, "V", "setModelContext", .jnew("moa.core.InstancesHeader", allinstances))
   .jcall(model$moamodel, "V", "prepareForUse")
@@ -90,6 +95,7 @@ trainMOA <- function(data, model, class, reset=TRUE, ...){
 #' hdt <- HoeffdingTree(numericEstimator = "GaussianNumericAttributeClassObserver")
 #' hdt
 #' data(iris)
+#' iris <- iris[c("Species","Sepal.Length","Sepal.Width","Petal.Length","Petal.Width")]
 #' iris <- factorise(iris)
 #' trainMOA(data=iris[sample(nrow(iris), size=round(nrow(iris)/2), replace=TRUE), ], 
 #'          model=hdt, class="Species")
