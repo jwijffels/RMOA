@@ -2,7 +2,7 @@
 \alias{trainMOA}
 \title{Train a MOA classifier, like e.g. a HoeffdingTree}
 \usage{
-trainMOA(data, model, class = colnames(data)[1], reset = TRUE, ...)
+trainMOA(data, model, class, reset = TRUE, ...)
 }
 \arguments{
   \item{data}{a data.frame}

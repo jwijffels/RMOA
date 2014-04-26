@@ -49,7 +49,7 @@ print.MOA_classifier <- function(x, ...){
 #' iris <- factorise(iris)
 #' trainMOA(data=iris[sample(nrow(iris), size=10, replace=TRUE), ], model=hdt, class="Species")
 #' hdt
-trainMOA <- function(data, model, class=colnames(data)[1], reset=TRUE, ...){    
+trainMOA <- function(data, model, class, reset=TRUE, ...){    
   atts <- MOAattributes(data=data)
   allinstances <- .jnew("weka.core.Instances", "data", atts$columnattributes, 1L)
   ## Set the response data to predict
@@ -72,39 +72,6 @@ trainMOA <- function(data, model, class=colnames(data)[1], reset=TRUE, ...){
   }
   invisible(model)
 } 
-
-#' Summary statistics of a MOA classifier 
-#'
-#' Summary statistics of a MOA classifier 
-#'
-#' @param object an object of class  \code{MOA_classifier}
-#' @param ... other arguments, currently not used yet
-#' @return the form of the return value depends on the type of MOA model
-#' @export 
-#' @S3method summary MOA_classifier
-#' @examples
-#' hdt <- HoeffdingTree(numericEstimator = "GaussianNumericAttributeClassObserver")
-#' hdt
-#' data(iris)
-#' iris <- factorise(iris)
-#' trainMOA(data=iris[sample(nrow(iris), size=round(nrow(iris)/2), replace=TRUE), ], 
-#'          model=hdt, class="Species")
-#' summary(hdt)
-summary.MOA_classifier <- function(object, ...){
-  out <- list()
-  out$trainingHasStarted <- .jcall(object$moamodel, "Z", "trainingHasStarted")
-  out$isRandomizable <- .jcall(object$moamodel, "Z", "isRandomizable")
-  out$type <- object$type
-  out$options <- object$options$options
-  out$fields <- fields(object)[c("attributes","attribute.names","response","responselevels")]
-  cat(out$type, sep="\n")  
-  cat(sprintf("response: %s", out$fields$response), sep="\n")
-  cat(sprintf("responselevels: %s", paste(out$fields$responselevels, collapse=", ")), sep="\n")
-  cat(sprintf("data features: %s", paste(out$fields$attribute.names, collapse=", ")), sep="\n")
-  cat(sprintf("Model has trained: %s", out$trainingHasStarted), sep="\n")
-  #print.MOAmodelOptions(out$options)  
-  invisible(out)
-}
 
 
 
@@ -158,6 +125,49 @@ predict.MOA_classifier <- function(object, newdata, type="response", ...){
   }    
 }
 
+#' Summary statistics of a MOA classifier 
+#'
+#' Summary statistics of a MOA classifier 
+#'
+#' @param object an object of class  \code{MOA_classifier}
+#' @param ... other arguments, currently not used yet
+#' @return the form of the return value depends on the type of MOA model
+#' @export 
+#' @S3method summary MOA_classifier
+#' @examples
+#' hdt <- HoeffdingTree(numericEstimator = "GaussianNumericAttributeClassObserver")
+#' hdt
+#' data(iris)
+#' iris <- factorise(iris)
+#' trainMOA(data=iris[sample(nrow(iris), size=round(nrow(iris)/2), replace=TRUE), ], 
+#'          model=hdt, class="Species")
+#' summary(hdt)
+summary.MOA_classifier <- function(object, ...){
+  out <- list()
+  out$trainingHasStarted <- .jcall(object$moamodel, "Z", "trainingHasStarted")
+  out$isRandomizable <- .jcall(object$moamodel, "Z", "isRandomizable")
+  out$type <- object$type
+  out$options <- object$options$options
+  out$fields <- fields(object)[c("attributes","attribute.names","response","responselevels")]
+  class(out) <- "summary_MOA_classifier"
+  out
+}
+
+##' @S3method print summary_MOA_classifier
+print.summary_MOA_classifier <- function(x, ...){
+  cat(x$type, sep="\n")  
+  cat(sprintf("response: %s", x$fields$response), sep="\n")
+  cat(sprintf("responselevels: %s", paste(x$fields$responselevels, collapse=", ")), sep="\n")
+  cat(sprintf("data features: %s", paste(x$fields$attribute.names, collapse=", ")), sep="\n")
+  cat(sprintf("Model has trained: %s", x$trainingHasStarted), sep="\n")
+  #print.MOAmodelOptions(x$options) 
+}
+
+
+
+
+
+
 
 fields <- function(x, ...){
   UseMethod(generic="fields", object=x)
@@ -165,8 +175,8 @@ fields <- function(x, ...){
 fields.MOA_classifier <- function(x){
   ctx <- x$moamodel$getModelContext()
   out <- list()
-  out$label <- ctx$relationName()
-  out$attributes <- ctx$numAttributes()
+  out$label <- .jcall(ctx, "S", "relationName")
+  out$attributes <- .jcall(ctx, "I", "numAttributes")
   out$attribute.names <- character(0)
   for(idx in 0:(out$attributes-1)){
     out$attribute.names <- append(out$attribute.names, ctx$attribute(idx)$name())
