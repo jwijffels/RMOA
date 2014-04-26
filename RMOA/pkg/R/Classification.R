@@ -4,22 +4,34 @@
 #'
 #' Create a HoeffdingTree
 #'
-#' @param ... options of parameters passed on to \code{MOAoptions}
+#' @param control an object of class \code{MOAmodelOptions} as obtained by calling \code{\link{MOAoptions}}
+#' @param ... options of parameters passed on to \code{\link{MOAoptions}}, in case \code{control} is left to NULL. Ignored
+#' if \code{control} is supplied
 #' @return An object of class \code{HoeffdingTree}
+#' @seealso \code{\link{MOAoptions}}
 #' @export 
 #' @examples
+#' ctrl <- MOAoptions(model = "HoeffdingTree", leafprediction = "MC", 
+#'    removePoorAtts = TRUE, binarySplits = TRUE, tieThreshold = 0.20)
+#' hdt <- HoeffdingTree(control=ctrl)
+#' hdt
 #' hdt <- HoeffdingTree(numericEstimator = "GaussianNumericAttributeClassObserver")
 #' hdt
-HoeffdingTree <- function(...) {
+HoeffdingTree <- function(control=NULL, ...) {
   out <- list()
   class(out) <- c("HoeffdingTree", "MOA_classifier", "MOA_model")
   out$type <- "HoeffdingTree"
   ## Create the model
   out$moamodel <- .jnew(modelclass(out$type))  
   ## Set MOA options
-  out$options <- MOAoptions(out, ...)  
-  ## And prepare for usage
-  #.jcall(out$moamodel, "V", "prepareForUse")
+  if(inherits(control, "MOAmodelOptions")){
+    if(control$model != out$type){
+      stop("Make control contains options for the correct model")
+    }
+    out$options <- control
+  }else{
+    out$options <- MOAoptions(out, ...)   
+  }  
   out
 }
 
