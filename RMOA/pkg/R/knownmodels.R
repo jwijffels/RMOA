@@ -1,8 +1,9 @@
-modelclass <- function(model){
-  knownmodels <- c("AdaHoeffdingOptionTree", "ASHoeffdingTree", "DecisionStump", "HoeffdingAdaptiveTree", "HoeffdingOptionTree",
-                   "HoeffdingTree", "LimAttHoeffdingTree", "RandomHoeffdingTree", 
-                   "NaiveBayes", "NaiveBayesMultinomial")
-  if(!model %in% knownmodels){
+.moaknownmodels <- c("AdaHoeffdingOptionTree", "ASHoeffdingTree", "DecisionStump", "HoeffdingAdaptiveTree", "HoeffdingOptionTree",
+                     "HoeffdingTree", "LimAttHoeffdingTree", "RandomHoeffdingTree", 
+                     "NaiveBayes", "NaiveBayesMultinomial")
+
+modelclass <- function(model){  
+  if(!model %in% .moaknownmodels){
     stop(sprintf("%s not an implemented model", as.character(model)))
   }
   recoder(model, 
