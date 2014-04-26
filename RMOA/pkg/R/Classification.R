@@ -46,18 +46,14 @@ print.MOA_classifier <- function(x, ...){
 #' hdt <- HoeffdingTree(numericEstimator = "GaussianNumericAttributeClassObserver")
 #' hdt
 #' data(iris)
-#' iris <- iris[c("Species","Sepal.Length","Sepal.Width","Petal.Length","Petal.Width")]
 #' iris <- factorise(iris)
 #' trainMOA(data=iris[sample(nrow(iris), size=10, replace=TRUE), ], model=hdt, class="Species")
 #' hdt
-trainMOA <- function(data, model, class, reset=TRUE, ...){    
-  if(class != colnames(data)[1]){
-    stop(sprintf("In MOA, you need to put your column to predict (%s) as the first column in your provided data data.frame", class))
-  }
+trainMOA <- function(data, model, class=colnames(data)[1], reset=TRUE, ...){    
   atts <- MOAattributes(data=data)
   allinstances <- .jnew("weka.core.Instances", "data", atts$columnattributes, 1L)
   ## Set the response data to predict
-  .jcall(allinstances, "V", "setClassIndex", attribute(atts, class)$pos)
+  #.jcall(allinstances, "V", "setClassIndex", attribute(atts, class)$pos)
   .jcall(allinstances, "V", "setClass", attribute(atts, class)$attribute)
   ## Prepare for usage
   .jcall(model$moamodel, "V", "setModelContext", .jnew("moa.core.InstancesHeader", allinstances))
@@ -90,7 +86,6 @@ trainMOA <- function(data, model, class, reset=TRUE, ...){
 #' hdt <- HoeffdingTree(numericEstimator = "GaussianNumericAttributeClassObserver")
 #' hdt
 #' data(iris)
-#' iris <- iris[c("Species","Sepal.Length","Sepal.Width","Petal.Length","Petal.Width")]
 #' iris <- factorise(iris)
 #' trainMOA(data=iris[sample(nrow(iris), size=round(nrow(iris)/2), replace=TRUE), ], 
 #'          model=hdt, class="Species")
@@ -128,7 +123,6 @@ summary.MOA_classifier <- function(object, ...){
 #' hdt <- HoeffdingTree(numericEstimator = "GaussianNumericAttributeClassObserver")
 #' hdt
 #' data(iris)
-#' iris <- iris[c("Species","Sepal.Length","Sepal.Width","Petal.Length","Petal.Width")]
 #' iris <- factorise(iris)
 #' trainMOA(data=iris[sample(nrow(iris), size=round(nrow(iris)/2), replace=TRUE), ], 
 #'          model=hdt, class="Species")
@@ -147,6 +141,9 @@ predict.MOA_classifier <- function(object, newdata, type="response", ...){
   
   atts <- MOAattributes(data=newdata)
   allinstances <- .jnew("weka.core.Instances", "data", atts$columnattributes, 1L)
+  #.jcall(allinstances, "V", "setClassIndex", attribute(atts, columnnames$response)$pos)
+  .jcall(allinstances, "V", "setClass", attribute(atts, columnnames$response)$attribute)
+  
   scores <- matrix(nrow = nrow(newdata), ncol = length(columnnames$responselevels))
   for(j in 1:nrow(newdata)){
     allinstances$add(0L, .jnew("weka/core/DenseInstance", 1.0, .jarray(as.double(newdata[j, ]))))    
