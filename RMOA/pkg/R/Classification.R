@@ -14,6 +14,7 @@
 #' @seealso \code{\link{MOAoptions}}
 #' @export 
 #' @examples
+#' RMOA:::.moaknownmodels
 #' ctrl <- MOAoptions(model = "HoeffdingTree", leafprediction = "MC", 
 #'    removePoorAtts = TRUE, binarySplits = TRUE, tieThreshold = 0.20)
 #' hdt <- MOA_classifier(model = "HoeffdingTree", control=ctrl)
@@ -114,7 +115,8 @@ trainMOA <- function(data, model, class, reset=TRUE, trace=FALSE){
       message(sprintf("%s MOA processing instance %s", Sys.time(), j))
     }
     allinstances$add(0L, .jnew("weka/core/DenseInstance", 1.0, .jarray(as.double(trainme[j, ]))))
-    model$moamodel$trainOnInstance(.jcast(allinstances$instance(0L), "weka/core/Instance"))    
+    .jcall(model$moamodel, "V", "trainOnInstance", .jcast(allinstances$instance(0L), "weka/core/Instance")) 
+    #model$moamodel$trainOnInstance(.jcast(allinstances$instance(0L), "weka/core/Instance"))    
   }
   invisible(model)
 } 

@@ -25,6 +25,7 @@ An object of class \code{MOA_classifier}
 Create a MOA classifier
 }
 \examples{
+RMOA:::.moaknownmodels
 ctrl <- MOAoptions(model = "HoeffdingTree", leafprediction = "MC",
    removePoorAtts = TRUE, binarySplits = TRUE, tieThreshold = 0.20)
 hdt <- MOA_classifier(model = "HoeffdingTree", control=ctrl)
