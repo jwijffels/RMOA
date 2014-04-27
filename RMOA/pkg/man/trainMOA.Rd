@@ -2,7 +2,7 @@
 \alias{trainMOA}
 \title{Train a MOA classifier, like e.g. a HoeffdingTree}
 \usage{
-trainMOA(data, model, class, reset = TRUE, ...)
+trainMOA(data, model, class, reset = TRUE, trace = FALSE)
 }
 \arguments{
   \item{data}{a data.frame}
@@ -15,7 +15,10 @@ trainMOA(data, model, class, reset = TRUE, ...)
   \item{reset}{logical indicating to reset the
   \code{MOA_classifier}. Defaults to TRUE.}
 
-  \item{...}{other arguments, currently not used yet}
+  \item{trace}{logical, indicating to show trace
+  information on how many rows are already processed or a
+  positive integer number showing progress when the
+  specified number of instances have been processed.}
 }
 \value{
 An object of class \code{MOA_classifier}

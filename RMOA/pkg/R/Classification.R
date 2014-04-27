@@ -1,26 +1,31 @@
 
-
-#' Create a HoeffdingTree
+#' Create a MOA classifier
 #'
-#' Create a HoeffdingTree
+#' Create a MOA classifier
 #'
+#' @param model character string with a model.
+#' E.g. HoeffdingTree, DecisionStump, NaiveBayes, HoeffdingOptionTree, ...
+#' The list of known models can be obtained by typing RMOA:::.moaknownmodels. 
+#' See the examples and \code{\link{MOAoptions}}.
 #' @param control an object of class \code{MOAmodelOptions} as obtained by calling \code{\link{MOAoptions}}
-#' @param ... options of parameters passed on to \code{\link{MOAoptions}}, in case \code{control} is left to NULL. Ignored
-#' if \code{control} is supplied
-#' @return An object of class \code{HoeffdingTree}
+#' @param ... options of parameters passed on to \code{\link{MOAoptions}}, in case \code{control} is left to NULL. 
+#' Ignored if \code{control} is supplied
+#' @return An object of class \code{MOA_classifier}
 #' @seealso \code{\link{MOAoptions}}
 #' @export 
 #' @examples
 #' ctrl <- MOAoptions(model = "HoeffdingTree", leafprediction = "MC", 
 #'    removePoorAtts = TRUE, binarySplits = TRUE, tieThreshold = 0.20)
-#' hdt <- HoeffdingTree(control=ctrl)
+#' hdt <- MOA_classifier(model = "HoeffdingTree", control=ctrl)
 #' hdt
-#' hdt <- HoeffdingTree(numericEstimator = "GaussianNumericAttributeClassObserver")
+#' hdt <- MOA_classifier(
+#'  model = "HoeffdingTree", 
+#'  numericEstimator = "GaussianNumericAttributeClassObserver")
 #' hdt
-HoeffdingTree <- function(control=NULL, ...) {
+MOA_classifier <- function(model, control=NULL, ...){
   out <- list()
-  class(out) <- c("HoeffdingTree", "MOA_classifier", "MOA_model")
-  out$type <- "HoeffdingTree"
+  class(out) <- c(model, "MOA_classifier", "MOA_model")
+  out$type <- model
   ## Create the model
   out$moamodel <- .jnew(modelclass(out$type))  
   ## Set MOA options
@@ -42,6 +47,31 @@ print.MOA_classifier <- function(x, ...){
 }
 
 
+#' Create a HoeffdingTree
+#'
+#' Create a HoeffdingTree
+#'
+#' @param control an object of class \code{MOAmodelOptions} as obtained by calling \code{\link{MOAoptions}}
+#' @param ... options of parameters passed on to \code{\link{MOAoptions}}, in case \code{control} is left to NULL. 
+#' Ignored if \code{control} is supplied
+#' @return An object of class \code{HoeffdingTree}
+#' @seealso \code{\link{MOAoptions}}
+#' @export 
+#' @examples
+#' ctrl <- MOAoptions(model = "HoeffdingTree", leafprediction = "MC", 
+#'    removePoorAtts = TRUE, binarySplits = TRUE, tieThreshold = 0.20)
+#' hdt <- HoeffdingTree(control=ctrl)
+#' hdt
+#' hdt <- HoeffdingTree(numericEstimator = "GaussianNumericAttributeClassObserver")
+#' hdt
+HoeffdingTree <- function(control=NULL, ...) {
+  MOA_classifier(model = "HoeffdingTree", control=control, ...)
+}
+
+
+
+
+
 
 #' Train a MOA classifier, like e.g. a HoeffdingTree
 #'
@@ -51,7 +81,8 @@ print.MOA_classifier <- function(x, ...){
 #' @param model an object of class \code{MOA_classifier}
 #' @param class a character string with a column name in \code{data}
 #' @param reset logical indicating to reset the \code{MOA_classifier}. Defaults to TRUE.
-#' @param ... other arguments, currently not used yet
+#' @param trace logical, indicating to show trace information on how many rows are already processed or a positive
+#' integer number showing progress when the specified number of instances have been processed.
 #' @return An object of class \code{MOA_classifier}
 #' @export 
 #' @examples
@@ -61,7 +92,7 @@ print.MOA_classifier <- function(x, ...){
 #' iris <- factorise(iris)
 #' trainMOA(data=iris[sample(nrow(iris), size=10, replace=TRUE), ], model=hdt, class="Species")
 #' hdt
-trainMOA <- function(data, model, class, reset=TRUE, ...){    
+trainMOA <- function(data, model, class, reset=TRUE, trace=FALSE){    
   atts <- MOAattributes(data=data)
   allinstances <- .jnew("weka.core.Instances", "data", atts$columnattributes, 1L)
   ## Set the response data to predict
@@ -79,8 +110,11 @@ trainMOA <- function(data, model, class, reset=TRUE, ...){
   trainme <- as.train(data)
   ## Loop over the data and train
   for(j in 1:nrow(trainme)){
+    if(trace & (j / trace) == round(j / trace)){
+      message(sprintf("%s MOA processing instance %s", Sys.time(), j))
+    }
     allinstances$add(0L, .jnew("weka/core/DenseInstance", 1.0, .jarray(as.double(trainme[j, ]))))
-    model$moamodel$trainOnInstance(.jcast(allinstances$instance(0L), "weka/core/Instance"))
+    model$moamodel$trainOnInstance(.jcast(allinstances$instance(0L), "weka/core/Instance"))    
   }
   invisible(model)
 } 
