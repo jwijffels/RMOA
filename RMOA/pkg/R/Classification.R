@@ -114,6 +114,7 @@ trainMOA <- function(data, model, class, reset=TRUE, trace=FALSE){
     if(trace & (j / trace) == round(j / trace)){
       message(sprintf("%s MOA processing instance %s", Sys.time(), j))
     }
+    #.jcall(allinstances, "V", "add", 0L, .jnew("weka/core/DenseInstance", 1.0, .jarray(as.double(trainme[j, ]))))
     allinstances$add(0L, .jnew("weka/core/DenseInstance", 1.0, .jarray(as.double(trainme[j, ]))))
     .jcall(model$moamodel, "V", "trainOnInstance", .jcast(allinstances$instance(0L), "weka/core/Instance")) 
     #model$moamodel$trainOnInstance(.jcast(allinstances$instance(0L), "weka/core/Instance"))    
