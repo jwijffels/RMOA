@@ -103,15 +103,13 @@ trainMOA <- function(data, model, class, reset=TRUE, trace=FALSE){
   .jcall(model$moamodel, "V", "prepareForUse")
   if(reset){
     .jcall(model$moamodel, "V", "resetLearning") 
-  }
-  .jcall(allinstances, "V", "delete")
-  
+  }  
   ## Levels go from 0-nlevels in MOA, while in R from 1:nlevels
   trainme <- as.train(data)
   ## Loop over the data and train
   for(j in 1:nrow(trainme)){
     if(trace & (j / trace) == round(j / trace)){
-      message(sprintf("%s MOA processing instance %s", Sys.time(), j))
+      message(sprintf("%s MOA processed instance %s", Sys.time(), j))
     }
     oneinstance <- .jnew("weka/core/DenseInstance", 1.0, .jarray(as.double(trainme[j, ])))  
     .jcall(oneinstance, "V", "setDataset", allinstances)
