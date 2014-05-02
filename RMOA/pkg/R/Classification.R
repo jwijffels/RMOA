@@ -95,9 +95,8 @@ HoeffdingTree <- function(control=NULL, ...) {
 #' hdt
 trainMOA <- function(data, model, class, reset=TRUE, trace=FALSE){    
   atts <- MOAattributes(data=data)
-  allinstances <- .jnew("weka.core.Instances", "data", atts$columnattributes, 1L)
+  allinstances <- .jnew("weka.core.Instances", "data", atts$columnattributes, 0L)
   ## Set the response data to predict
-  #.jcall(allinstances, "V", "setClassIndex", attribute(atts, class)$pos)
   .jcall(allinstances, "V", "setClass", attribute(atts, class)$attribute)
   ## Prepare for usage
   .jcall(model$moamodel, "V", "setModelContext", .jnew("moa.core.InstancesHeader", allinstances))
@@ -114,10 +113,10 @@ trainMOA <- function(data, model, class, reset=TRUE, trace=FALSE){
     if(trace & (j / trace) == round(j / trace)){
       message(sprintf("%s MOA processing instance %s", Sys.time(), j))
     }
-    #.jcall(allinstances, "V", "add", 0L, .jnew("weka/core/DenseInstance", 1.0, .jarray(as.double(trainme[j, ]))))
-    allinstances$add(0L, .jnew("weka/core/DenseInstance", 1.0, .jarray(as.double(trainme[j, ]))))
-    .jcall(model$moamodel, "V", "trainOnInstance", .jcast(allinstances$instance(0L), "weka/core/Instance")) 
-    #model$moamodel$trainOnInstance(.jcast(allinstances$instance(0L), "weka/core/Instance"))    
+    oneinstance <- .jnew("weka/core/DenseInstance", 1.0, .jarray(as.double(trainme[j, ])))  
+    .jcall(oneinstance, "V", "setDataset", allinstances)
+    oneinstance <- .jcast(oneinstance, "weka/core/Instance")
+    .jcall(model$moamodel, "V", "trainOnInstance", oneinstance)
   }
   invisible(model)
 } 
@@ -156,15 +155,15 @@ predict.MOA_classifier <- function(object, newdata, type="response", ...){
   newdata <- as.train(newdata[, columnnames$attribute.names, drop = FALSE])
   
   atts <- MOAattributes(data=newdata)
-  allinstances <- .jnew("weka.core.Instances", "data", atts$columnattributes, 1L)
-  #.jcall(allinstances, "V", "setClassIndex", attribute(atts, columnnames$response)$pos)
+  allinstances <- .jnew("weka.core.Instances", "data", atts$columnattributes, 0L)
   .jcall(allinstances, "V", "setClass", attribute(atts, columnnames$response)$attribute)
   
   scores <- matrix(nrow = nrow(newdata), ncol = length(columnnames$responselevels))
   for(j in 1:nrow(newdata)){
-    allinstances$add(0L, .jnew("weka/core/DenseInstance", 1.0, .jarray(as.double(newdata[j, ]))))    
-    i <- allinstances$instance(0L)
-    scores[j, ] <- object$moamodel$getVotesForInstance(.jcast(i, "weka/core/Instance"))
+    oneinstance <- .jnew("weka/core/DenseInstance", 1.0, .jarray(as.double(newdata[j, ])))  
+    .jcall(oneinstance, "V", "setDataset", allinstances)
+    oneinstance <- .jcast(oneinstance, "weka/core/Instance")
+    scores[j, ] <- object$moamodel$getVotesForInstance(oneinstance)
   }
   if(type == "votes"){
     return(scores)
