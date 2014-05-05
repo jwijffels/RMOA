@@ -80,7 +80,7 @@ HoeffdingTree <- function(control=NULL, ...) {
 #'
 #' @param data a data.frame
 #' @param model an object of class \code{MOA_classifier}
-#' @param class a character string with a column name in \code{data}
+#' @param response a character string with a column name in \code{data}
 #' @param reset logical indicating to reset the \code{MOA_classifier}. Defaults to TRUE.
 #' @param trace logical, indicating to show trace information on how many rows are already processed or a positive
 #' integer number showing progress when the specified number of instances have been processed.
@@ -91,13 +91,13 @@ HoeffdingTree <- function(control=NULL, ...) {
 #' hdt
 #' data(iris)
 #' iris <- factorise(iris)
-#' trainMOA(data=iris[sample(nrow(iris), size=10, replace=TRUE), ], model=hdt, class="Species")
+#' trainMOA(data=iris[sample(nrow(iris), size=10, replace=TRUE), ], model=hdt, response="Species")
 #' hdt
-trainMOA <- function(data, model, class, reset=TRUE, trace=FALSE){    
+trainMOA <- function(data, model, response, reset=TRUE, trace=FALSE){    
   atts <- MOAattributes(data=data)
   allinstances <- .jnew("weka.core.Instances", "data", atts$columnattributes, 0L)
   ## Set the response data to predict
-  .jcall(allinstances, "V", "setClass", attribute(atts, class)$attribute)
+  .jcall(allinstances, "V", "setClass", attribute(atts, response)$attribute)
   ## Prepare for usage
   .jcall(model$moamodel, "V", "setModelContext", .jnew("moa.core.InstancesHeader", allinstances))
   .jcall(model$moamodel, "V", "prepareForUse")
@@ -138,7 +138,7 @@ trainMOA <- function(data, model, class, reset=TRUE, trace=FALSE){
 #' data(iris)
 #' iris <- factorise(iris)
 #' trainMOA(data=iris[sample(nrow(iris), size=round(nrow(iris)/2), replace=TRUE), ], 
-#'          model=hdt, class="Species")
+#'          model=hdt, response="Species")
 #' hdt
 #' scores <- predict(hdt, newdata= iris, type="response")
 #' str(scores)
@@ -186,7 +186,7 @@ predict.MOA_classifier <- function(object, newdata, type="response", ...){
 #' data(iris)
 #' iris <- factorise(iris)
 #' trainMOA(data=iris[sample(nrow(iris), size=round(nrow(iris)/2), replace=TRUE), ], 
-#'          model=hdt, class="Species")
+#'          model=hdt, response="Species")
 #' summary(hdt)
 summary.MOA_classifier <- function(object, ...){
   out <- list()

@@ -27,7 +27,7 @@ hdt
 data(iris)
 iris <- factorise(iris)
 trainMOA(data=iris[sample(nrow(iris), size=round(nrow(iris)/2), replace=TRUE), ],
-         model=hdt, class="Species")
+         model=hdt, response="Species")
 hdt
 scores <- predict(hdt, newdata= iris, type="response")
 str(scores)

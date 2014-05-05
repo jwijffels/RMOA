@@ -2,14 +2,14 @@
 \alias{trainMOA}
 \title{Train a MOA classifier, like e.g. a HoeffdingTree}
 \usage{
-trainMOA(data, model, class, reset = TRUE, trace = FALSE)
+trainMOA(data, model, response, reset = TRUE, trace = FALSE)
 }
 \arguments{
   \item{data}{a data.frame}
 
   \item{model}{an object of class \code{MOA_classifier}}
 
-  \item{class}{a character string with a column name in
+  \item{response}{a character string with a column name in
   \code{data}}
 
   \item{reset}{logical indicating to reset the
@@ -31,7 +31,7 @@ hdt <- HoeffdingTree(numericEstimator = "GaussianNumericAttributeClassObserver")
 hdt
 data(iris)
 iris <- factorise(iris)
-trainMOA(data=iris[sample(nrow(iris), size=10, replace=TRUE), ], model=hdt, class="Species")
+trainMOA(data=iris[sample(nrow(iris), size=10, replace=TRUE), ], model=hdt, response="Species")
 hdt
 }
 
