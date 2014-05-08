@@ -11,6 +11,7 @@ The package is currently not available at CRAN.
 To install the latest version from github
 ```
 library(devtools)
+install.packages("ff")
 install_github("jwijffels/RMOA", subdir="RMOAjars/pkg")
 install_github("jwijffels/RMOA", subdir="RMOA/pkg")
 ```
