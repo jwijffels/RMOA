@@ -1,0 +1,40 @@
+\docType{class}
+\name{datastream_ffdf}
+\alias{datastream_ffdf}
+\title{data streams on an ffdf}
+\arguments{
+  \item{data}{a data.frame to extract data from in a
+  streaming way}
+}
+\value{
+A class of type \code{datastream_ffdf} which contains
+\describe{ \item{data: }{The ffdf to extract instances
+from} \item{all fields of the datastream superclass: }{See
+\code{\link{datastream}}} }
+}
+\description{
+Reference object of class \code{datastream_ffdf}. This is a
+class which inherits from class \code{datastream} and which
+can be used to read in a stream from a ffdf from the ff
+package.
+}
+\section{Methods}{
+  \itemize{ \item \code{get_points(n)} Get data from a
+  datastream object.  \describe{ \item{n}{integer,
+  indicating the number of instances to retrieve from the
+  datastream} } }
+}
+\examples{
+## You need to load package ff before you can use datastream_ffdf
+require(ff)
+irisff <- as.ffdf(factorise(iris))
+x <- datastream_ffdf(data=irisff)
+x$get_points(10)
+x
+x$get_points(10)
+x
+}
+\seealso{
+\code{\link{datastream}}
+}
+

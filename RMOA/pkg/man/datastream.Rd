@@ -25,8 +25,10 @@ class which holds general information about the data
 stream.\cr Currently streams are implemented for data in
 table format (streams of read.table, read.csv, read.csv2,
 read.delim, read.delim2), data in RAM (data.frame, matrix),
-data in ff.\cr See the documentation of
-\code{\link{datastream_file}}
+data in ff (on disk).\cr See the documentation of
+\code{\link{datastream_file}},
+\code{\link{datastream_dataframe}} and
+\code{\link{datastream_ffdf}}
 }
 \examples{
 ## Basic example, showing the general methods available for a datastream object

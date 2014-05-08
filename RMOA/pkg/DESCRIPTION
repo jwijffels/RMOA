@@ -12,6 +12,8 @@ Depends:
     RMOAjars (>= 1.0),
     rJava (>= 0.6-3),
     methods
+Suggests:
+    ff
 SystemRequirements: Java (>= 5.0)
 License: GPL-3
 Copyright: Code is Copyright (C) BNOSAC.

@@ -3,8 +3,9 @@
 #' @description Reference object of class datastream. This is a generic class which holds general 
 #' information about the data stream.\cr
 #' Currently streams are implemented for data in table format (streams of read.table, read.csv, read.csv2,
-#' read.delim, read.delim2), data in RAM (data.frame, matrix), data in ff.\cr
-#' See the documentation of \code{\link{datastream_file}}
+#' read.delim, read.delim2), data in RAM (data.frame, matrix), data in ff (on disk).\cr
+#' See the documentation of \code{\link{datastream_file}}, \code{\link{datastream_dataframe}} 
+#' and \code{\link{datastream_ffdf}}
 #' 
 #' @name datastream
 #' @export datastream 
@@ -264,4 +265,60 @@ datastream_dataframe$methods(
   }) 
 
 
-
+#' @title data streams on an ffdf
+#' 
+#' @description Reference object of class \code{datastream_ffdf}.
+#' This is a class which inherits from class \code{datastream} and which can be used to read in a stream
+#' from a ffdf from the ff package.
+#' 
+#' @name datastream_ffdf
+#' @export datastream_ffdf 
+#' @aliases datastream_ffdf
+#' @docType class
+#' @param data a data.frame to extract data from in a streaming way
+#' @return A class of type \code{datastream_ffdf} which contains
+#' \describe{
+#'   \item{data: }{The ffdf to extract instances from}
+#'   \item{all fields of the datastream superclass: }{See \code{\link{datastream}}}
+#' }
+#' @section Methods:
+#' \itemize{
+#'   \item \code{get_points(n)} Get data from a datastream object.
+#'      \describe{
+#'        \item{n}{integer, indicating the number of instances to retrieve from the datastream}
+#'      }
+#' }
+#' @seealso \code{\link{datastream}}
+#' @examples
+#' ## You need to load package ff before you can use datastream_ffdf
+#' require(ff)
+#' irisff <- as.ffdf(factorise(iris))
+#' x <- datastream_ffdf(data=irisff)
+#' x$get_points(10)
+#' x
+#' x$get_points(10)
+#' x
+datastream_ffdf <- setRefClass(Class="datastream_ffdf", 
+                               fields = list(data = "ANY"),
+                               contains = "datastream")
+datastream_ffdf$methods(
+  initialize = function(data){
+    callSuper(description="ffdf stream")
+    .self$data <- data     
+    .self
+  },
+  show = function() {
+    callSuper()
+    cat(.self$description, "\n")
+    cat(" NROWS:", nrow(.self$data), "\n")
+  },
+  get_points = function(n=1, ...) {
+    if(.self$state > nrow(.self$data) || .self$state + (n-1)  > nrow(.self$data)){
+      .self$hasfinished()
+      return(invisible())
+    }else{
+      x <- .self$data[.self$state:(.self$state+n-1), , drop=FALSE]
+      .self$hasread(nrow(x))  
+      return(x)
+    }
+  }) 
