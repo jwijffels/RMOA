@@ -1,0 +1,83 @@
+\docType{class}
+\name{datastream_file}
+\alias{datastream_csv}
+\alias{datastream_csv2}
+\alias{datastream_delim}
+\alias{datastream_delim2}
+\alias{datastream_file}
+\alias{datastream_table}
+\title{File data stream}
+\arguments{
+  \item{description}{The name how the stream is labelled}
+
+  \item{FUN}{The function to use to read in the file.
+  Defaults to \code{read.table} for
+  \code{datastream_table}, \code{read.csv} for
+  \code{datastream_csv}, \code{read.csv2} for
+  \code{datastream_csv2}, \code{read.delim} for
+  \code{datastream_delim}, \code{read.delim2} for
+  \code{datastream_delim2}}
+
+  \item{columnnames}{optional character vector of column to
+  overwrite the column names of the data read in with in
+  \code{get_points}}
+
+  \item{file}{The file to read in. See e.g.
+  \code{read.table}}
+
+  \item{...}{parameters passed on to \code{FUN}. See e.g.
+  \code{read.table}}
+}
+\value{
+A class of type \code{datastream_file} which contains
+\describe{ \item{FUN: }{The function to use to read in the
+file} \item{connection: }{A connection to the file}
+\item{columnnames: }{A character vector of column names to
+overwrite the column names with in \code{get_points}}
+\item{all fields of the datastream superclass: }{See
+\code{\link{datastream}}} }
+}
+\description{
+Reference object of class \code{datastream_file}. This is a
+class which inherits from class \code{datastream} and which
+can be used to read in a stream from a file. A number of
+file readers have been implemented, namely
+\strong{\code{datastream_table}},
+\strong{\code{datastream_csv}},
+\strong{\code{datastream_csv2}},
+\strong{\code{datastream_delim}},
+\strong{\code{datastream_delim2}}.\cr See the examples.
+}
+\section{Methods}{
+  \itemize{ \item \code{get_points(n)} Get data from a
+  datastream object.  \describe{ \item{n}{integer,
+  indicating the number of instances to retrieve from the
+  datastream} } }
+}
+\examples{
+mydata <- iris
+mydata$Species[2:3] <- NA
+## Example of a CSV file stream
+myfile <- tempfile()
+write.csv(iris, file = myfile, row.names=FALSE, na = "")
+x <- datastream_csv(file = myfile, na.strings = "")
+x
+x$get_points(n=10)
+x
+x$get_points(n=10)
+x
+x$stop()
+
+## Create your own specific file stream
+write.table(iris, file = myfile, row.names=FALSE, na = "")
+x <- datastream_file(description="My file defintion stream", FUN=read.table,
+ file = myfile, header=TRUE, na.strings="")
+x$get_points(n=10)
+x
+}
+\seealso{
+\code{\link{read.table}}, \code{\link{read.csv}},
+\code{\link{read.csv2}}, \code{\link{read.delim}},
+\code{\link{read.delim2}}
+}
+

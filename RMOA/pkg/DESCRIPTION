@@ -10,7 +10,8 @@ Description: Connect R with MOA to run streaming classifications, clustering
     streaming data.
 Depends:
     RMOAjars (>= 1.0),
-    rJava (>= 0.6-3)
+    rJava (>= 0.6-3),
+    methods
 SystemRequirements: Java (>= 5.0)
 License: GPL-3
 Copyright: Code is Copyright (C) BNOSAC.
