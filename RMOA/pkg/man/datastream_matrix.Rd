@@ -1,0 +1,37 @@
+\docType{class}
+\name{datastream_matrix}
+\alias{datastream_matrix}
+\title{data streams on a matrix}
+\arguments{
+  \item{data}{a matrix to extract data from in a streaming
+  way}
+}
+\value{
+A class of type \code{datastream_matrix} which contains
+\describe{ \item{data: }{The matrix to extract instances
+from} \item{all fields of the datastream superclass: }{See
+\code{\link{datastream}}} }
+}
+\description{
+Reference object of class \code{datastream_matrix}. This is
+a class which inherits from class \code{datastream} and
+which can be used to read in a stream from a matrix.
+}
+\section{Methods}{
+  \itemize{ \item \code{get_points(n)} Get data from a
+  datastream object.  \describe{ \item{n}{integer,
+  indicating the number of instances to retrieve from the
+  datastream} } }
+}
+\examples{
+data <- matrix(rnorm(1000*10), nrow = 1000, ncol = 10)
+x <- datastream_matrix(data=data)
+x$get_points(10)
+x
+x$get_points(10)
+x
+}
+\seealso{
+\code{\link{datastream}}
+}
+

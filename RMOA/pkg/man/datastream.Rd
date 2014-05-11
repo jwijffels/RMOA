@@ -27,7 +27,8 @@ table format (streams of read.table, read.csv, read.csv2,
 read.delim, read.delim2), data in RAM (data.frame, matrix),
 data in ff (on disk).\cr See the documentation of
 \code{\link{datastream_file}},
-\code{\link{datastream_dataframe}} and
+\code{\link{datastream_dataframe}},
+\code{\link{datastream_matrix}}, and
 \code{\link{datastream_ffdf}}
 }
 \examples{
