@@ -29,10 +29,10 @@ iris <- factorise(iris)
 trainMOA(data=iris[sample(nrow(iris), size=round(nrow(iris)/2), replace=TRUE), ],
          model=hdt, response="Species")
 hdt
-scores <- predict(hdt, newdata= iris, type="response")
+scores <- predict(hdt, newdata= iris[, setdiff(names(iris), "Species")], type="response")
 str(scores)
 table(scores, iris$Species)
-scores <- predict(hdt, newdata= iris, type="votes")
+scores <- predict(hdt, newdata= iris[, setdiff(names(iris), "Species")], type="votes")
 head(scores)
 }
 

@@ -140,16 +140,17 @@ trainMOA <- function(data, model, response, reset=TRUE, trace=FALSE){
 #' trainMOA(data=iris[sample(nrow(iris), size=round(nrow(iris)/2), replace=TRUE), ], 
 #'          model=hdt, response="Species")
 #' hdt
-#' scores <- predict(hdt, newdata= iris, type="response")
+#' scores <- predict(hdt, newdata= iris[, setdiff(names(iris), "Species")], type="response")
 #' str(scores)
 #' table(scores, iris$Species)
-#' scores <- predict(hdt, newdata= iris, type="votes")
+#' scores <- predict(hdt, newdata= iris[, setdiff(names(iris), "Species")], type="votes")
 #' head(scores)
 predict.MOA_classifier <- function(object, newdata, type="response", ...){
   if(!.jcall(object$moamodel, "Z", "trainingHasStarted")){
     stop("Model is not trained yet")
   }
   columnnames <- fields(object)
+  newdata[[columnnames$response]] <- factor(NA, levels = columnnames$responselevels) ## Needs the response data to create DenseInstance but this is unknown
   newdata <- as.train(newdata[, columnnames$attribute.names, drop = FALSE])
   
   atts <- MOAattributes(data=newdata)
