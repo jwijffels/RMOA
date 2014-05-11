@@ -16,5 +16,3 @@ Copyright: MOA and WEKA code in inst/java/moa.jar is Copyright (C) The
 Author: Jan Wijffels [aut, cre]
 Maintainer: Jan Wijffels <jwijffels@bnosac.be>
 URL: http://www.bnosac.be, http://moa.cms.waikato.ac.nz/
-Collate:
-    'onLoad.R'
