@@ -52,7 +52,7 @@ datastream$methods(
     .self$finished <- TRUE
   },
   isfinished = function(){
-    .self$isfinished
+    .self$finished
   },
   resetstate = function(){
     .self$state <- 0L
