@@ -44,6 +44,59 @@ trainMOA <- function(data, model, response, reset=TRUE, trace=FALSE){
 } 
 
 
+train <- function(model, formula, data, subset, na.action, transFUN=identity, chunksize=10, reset=TRUE){
+  mc <- match.call()
+  mf <- mc[c(1L, match(c("formula", "data", "subset", "na.action"), names(mc), 0L))]
+  mf[[1L]] <- as.name("model.frame")
+  mf[[3L]] <- as.name("datachunk")
+  mf$drop.unused.levels <- FALSE
+  terms <- attr(mf, "terms")
+  if (any(attr(terms, "order") > 1L)){
+    stop("Interactions are currently not allowed.")
+  }
+  ### Get data of first chunk and extract the model.frame
+  datachunk <- data$get_points(chunksize)
+  data$hasread(nrow(datachunk))
+  datachunk <- transFUN(datachunk)  
+  traindata <- eval(mf)  
+  # build the weka instances structure
+  atts <- MOAattributes(data=traindata)
+  allinstances <- .jnew("weka.core.Instances", "data", atts$columnattributes, 0L)
+  ## Set the response data to predict
+  response <- all.vars(formula)[1]
+  .jcall(allinstances, "V", "setClass", attribute(atts, response)$attribute)
+  ## Prepare for usage
+  .jcall(model$moamodel, "V", "setModelContext", .jnew("moa.core.InstancesHeader", allinstances))
+  .jcall(model$moamodel, "V", "prepareForUse")
+  if(reset){
+    .jcall(model$moamodel, "V", "resetLearning") 
+  }  
+  trainchunk <- function(model, traindata, allinstances){
+    ## Levels go from 0-nlevels in MOA, while in R from 1:nlevels
+    traindata <- as.train(traindata)
+    ## Loop over the data and train
+    for(j in 1:nrow(traindata)){
+      oneinstance <- .jnew("weka/core/DenseInstance", 1.0, .jarray(as.double(traindata[j, ])))  
+      .jcall(oneinstance, "V", "setDataset", allinstances)
+      oneinstance <- .jcast(oneinstance, "weka/core/Instance")
+      .jcall(model$moamodel, "V", "trainOnInstance", oneinstance)
+    }
+    model
+  }
+  model <- trainchunk(model = model, traindata = traindata, allinstances = allinstances)
+  while(!data$isfinished()){
+    datachunk <- data$get_points(chunksize)    
+    if(is.null(datachunk)){
+      break
+    }
+    data$hasread(nrow(datachunk))    
+    datachunk <- transFUN(datachunk)  
+    traindata <- eval(mf)   
+    model <- trainchunk(model = model, traindata = traindata, allinstances = allinstances)
+  }
+  invisible(model)
+} 
+
 
 #' Predict using a MOA classifier
 #'
