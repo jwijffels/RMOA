@@ -7,10 +7,10 @@
 }
 \arguments{
   \item{object}{an object of class \code{MOA_trainedmodel},
-  as returned by \code{\link{train}}}
+  as returned by \code{\link{trainMOA}}}
 
   \item{newdata}{a data.frame with the same structure and
-  the same levels as used in \code{train}}
+  the same levels as used in \code{trainMOA}}
 
   \item{type}{a character string, either 'response' or
   'votes'}
@@ -32,7 +32,7 @@ A matrix of votes or a vector with the predicted class
 Predict using a MOA classifier on a new dataset. Make sure
 the new dataset has the same structure and the same levels
 as \code{get_points} returns on the datastream which was
-used in \code{train}
+used in \code{trainMOA}
 }
 \examples{
 ## Hoeffdingtree
@@ -46,7 +46,7 @@ traintest$trainingset <- iris[traintest$trainidx, ]
 traintest$testset <- iris[-traintest$trainidx, ]
 irisdatastream <- datastream_dataframe(data=traintest$trainingset)
 ## Train the model
-hdtreetrained <- train(model = hdt,
+hdtreetrained <- trainMOA(model = hdt,
  Species ~ Sepal.Length + Sepal.Width + Petal.Length + Petal.Width,
  data = irisdatastream)
 
@@ -60,6 +60,6 @@ scores <- predict(hdtreetrained, newdata=traintest$testset, type="votes")
 head(scores)
 }
 \seealso{
-\code{\link{train}}
+\code{\link{trainMOA}}
 }
 

@@ -1,8 +1,8 @@
-\name{train}
-\alias{train}
+\name{trainMOA}
+\alias{trainMOA}
 \title{Train a MOA classifier (e.g. a HoeffdingTree) on a datastream}
 \usage{
-train(model, formula, data, subset, na.action, transFUN = identity,
+trainMOA(model, formula, data, subset, na.action, transFUN = identity,
   chunksize = 1000, reset = TRUE, trace = FALSE)
 }
 \arguments{
@@ -69,10 +69,10 @@ iris <- factorise(iris)
 irisdatastream <- datastream_dataframe(data=iris)
 irisdatastream$get_points(3)
 
-mymodel <- train(model = hdt, Species ~ Sepal.Length + Sepal.Width + Petal.Length,
+mymodel <- trainMOA(model = hdt, Species ~ Sepal.Length + Sepal.Width + Petal.Length,
  data = irisdatastream, chunksize = 10)
 mymodel$model
-mymodel$model <- train(model = hdt,
+mymodel$model <- trainMOA(model = hdt,
  Species ~ Sepal.Length + Sepal.Width + Petal.Length + Petal.Length^2,
  data = irisdatastream, chunksize = 10, reset=TRUE)
 mymodel$model
@@ -82,6 +82,7 @@ mymodel$model
 \code{\link{datastream_file}},
 \code{\link{datastream_dataframe}},
 \code{\link{datastream_matrix}},
-\code{\link{datastream_ffdf}}, \code{\link{datastream}}
+\code{\link{datastream_ffdf}}, \code{\link{datastream}},
+\code{\link{predict.MOA_trainedmodel}}
 }
 

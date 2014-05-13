@@ -31,7 +31,8 @@
 #' \item{transFUN: the transFUN argument}
 #' }
 #' @seealso \code{\link{MOA_classifier}}, \code{\link{datastream_file}}, \code{\link{datastream_dataframe}}, 
-#' \code{\link{datastream_matrix}}, \code{\link{datastream_ffdf}}, \code{\link{datastream}}
+#' \code{\link{datastream_matrix}}, \code{\link{datastream_ffdf}}, \code{\link{datastream}},
+#' \code{\link{predict.MOA_trainedmodel}}
 #' @export 
 #' @examples
 #' hdt <- HoeffdingTree(numericEstimator = "GaussianNumericAttributeClassObserver")
@@ -41,14 +42,14 @@
 #' irisdatastream <- datastream_dataframe(data=iris)
 #' irisdatastream$get_points(3)
 #' 
-#' mymodel <- train(model = hdt, Species ~ Sepal.Length + Sepal.Width + Petal.Length, 
+#' mymodel <- trainMOA(model = hdt, Species ~ Sepal.Length + Sepal.Width + Petal.Length, 
 #'  data = irisdatastream, chunksize = 10)
 #' mymodel$model
-#' mymodel$model <- train(model = hdt, 
+#' mymodel$model <- trainMOA(model = hdt, 
 #'  Species ~ Sepal.Length + Sepal.Width + Petal.Length + Petal.Length^2, 
 #'  data = irisdatastream, chunksize = 10, reset=TRUE)
 #' mymodel$model
-train <- function(model, formula, data, subset, na.action, transFUN=identity, chunksize=1000, reset=TRUE, trace=FALSE){
+trainMOA <- function(model, formula, data, subset, na.action, transFUN=identity, chunksize=1000, reset=TRUE, trace=FALSE){
   mc <- match.call()
   mf <- mc[c(1L, match(c("formula", "data", "subset", "na.action"), names(mc), 0L))]
   mf[[1L]] <- as.name("model.frame")
@@ -118,10 +119,10 @@ train <- function(model, formula, data, subset, na.action, transFUN=identity, ch
 #' Predict using a MOA classifier on a new dataset
 #'
 #' Predict using a MOA classifier on a new dataset. Make sure the new dataset has the same structure
-#' and the same levels as \code{get_points} returns on the datastream which was used in \code{train}
+#' and the same levels as \code{get_points} returns on the datastream which was used in \code{trainMOA}
 #'
-#' @param object an object of class \code{MOA_trainedmodel}, as returned by \code{\link{train}}
-#' @param newdata a data.frame with the same structure and the same levels as used in \code{train}
+#' @param object an object of class \code{MOA_trainedmodel}, as returned by \code{\link{trainMOA}}
+#' @param newdata a data.frame with the same structure and the same levels as used in \code{trainMOA}
 #' @param type a character string, either 'response' or 'votes'
 #' @param transFUN a function which is used on \code{newdata} 
 #' before applying \code{\link{model.frame}}. 
@@ -132,7 +133,7 @@ train <- function(model, formula, data, subset, na.action, transFUN=identity, ch
 #' @return A matrix of votes or a vector with the predicted class 
 #' @export 
 #' @S3method predict MOA_trainedmodel
-#' @seealso \code{\link{train}}
+#' @seealso \code{\link{trainMOA}}
 #' @examples
 #' ## Hoeffdingtree
 #' hdt <- HoeffdingTree(numericEstimator = "GaussianNumericAttributeClassObserver")
@@ -145,7 +146,7 @@ train <- function(model, formula, data, subset, na.action, transFUN=identity, ch
 #' traintest$testset <- iris[-traintest$trainidx, ]
 #' irisdatastream <- datastream_dataframe(data=traintest$trainingset)
 #' ## Train the model
-#' hdtreetrained <- train(model = hdt, 
+#' hdtreetrained <- trainMOA(model = hdt, 
 #'  Species ~ Sepal.Length + Sepal.Width + Petal.Length + Petal.Width, 
 #'  data = irisdatastream)
 #' 

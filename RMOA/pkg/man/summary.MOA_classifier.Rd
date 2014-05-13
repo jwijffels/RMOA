@@ -23,7 +23,7 @@ data(iris)
 iris <- factorise(iris)
 irisdatastream <- datastream_dataframe(data=iris)
 ## Train the model
-hdtreetrained <- train(model = hdt,
+hdtreetrained <- trainMOA(model = hdt,
  Species ~ Sepal.Length + Sepal.Width + Petal.Length + Petal.Width,
  data = irisdatastream)
 summary(hdtreetrained$model)
