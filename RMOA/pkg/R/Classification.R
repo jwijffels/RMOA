@@ -85,9 +85,12 @@ HoeffdingTree <- function(control=NULL, ...) {
 #' hdt
 #' data(iris)
 #' iris <- factorise(iris)
-#' trainMOA(data=iris[sample(nrow(iris), size=round(nrow(iris)/2), replace=TRUE), ], 
-#'          model=hdt, response="Species")
-#' summary(hdt)
+#' irisdatastream <- datastream_dataframe(data=iris)
+#' ## Train the model
+#' hdtreetrained <- train(model = hdt, 
+#'  Species ~ Sepal.Length + Sepal.Width + Petal.Length + Petal.Width, 
+#'  data = irisdatastream)
+#' summary(hdtreetrained$model)
 summary.MOA_classifier <- function(object, ...){
   out <- list()
   out$trainingHasStarted <- .jcall(object$moamodel, "Z", "trainingHasStarted")

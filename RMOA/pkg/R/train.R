@@ -1,49 +1,3 @@
-#' Train a MOA classifier, like e.g. a HoeffdingTree
-#'
-#' Train a MOA classifier, like e.g. a HoeffdingTree
-#'
-#' @param data a data.frame
-#' @param model an object of class \code{MOA_classifier}
-#' @param response a character string with a column name in \code{data}
-#' @param reset logical indicating to reset the \code{MOA_classifier}. Defaults to TRUE.
-#' @param trace logical, indicating to show trace information on how many rows are already processed or a positive
-#' integer number showing progress when the specified number of instances have been processed.
-#' @return An object of class \code{MOA_classifier}
-#' @export 
-#' @examples
-#' hdt <- HoeffdingTree(numericEstimator = "GaussianNumericAttributeClassObserver")
-#' hdt
-#' data(iris)
-#' iris <- factorise(iris)
-#' trainMOA(data=iris[sample(nrow(iris), size=10, replace=TRUE), ], model=hdt, response="Species")
-#' hdt
-trainMOA <- function(data, model, response, reset=TRUE, trace=FALSE){    
-  atts <- MOAattributes(data=data)
-  allinstances <- .jnew("weka.core.Instances", "data", atts$columnattributes, 0L)
-  ## Set the response data to predict
-  .jcall(allinstances, "V", "setClass", attribute(atts, response)$attribute)
-  ## Prepare for usage
-  .jcall(model$moamodel, "V", "setModelContext", .jnew("moa.core.InstancesHeader", allinstances))
-  .jcall(model$moamodel, "V", "prepareForUse")
-  if(reset){
-    .jcall(model$moamodel, "V", "resetLearning") 
-  }  
-  ## Levels go from 0-nlevels in MOA, while in R from 1:nlevels
-  trainme <- as.train(data)
-  ## Loop over the data and train
-  for(j in 1:nrow(trainme)){
-    if(trace & (j / trace) == round(j / trace)){
-      message(sprintf("%s MOA processed instance %s", Sys.time(), j))
-    }
-    oneinstance <- .jnew("weka/core/DenseInstance", 1.0, .jarray(as.double(trainme[j, ])))  
-    .jcall(oneinstance, "V", "setDataset", allinstances)
-    oneinstance <- .jcast(oneinstance, "weka/core/Instance")
-    .jcall(model$moamodel, "V", "trainOnInstance", oneinstance)
-  }
-  invisible(model)
-} 
-
-
 #' Train a MOA classifier (e.g. a HoeffdingTree) on a datastream
 #'
 #' Train a MOA classifier (e.g. a HoeffdingTree) on a datastream
@@ -166,8 +120,8 @@ train <- function(model, formula, data, subset, na.action, transFUN=identity, ch
 #' Predict using a MOA classifier on a new dataset. Make sure the new dataset has the same structure
 #' and the same levels as \code{get_points} returns on the datastream which was used in \code{train}
 #'
-#' @param object an object of class \code{MOA_trainedmodel}, as returned by \code{\link{trainMOA}}
-#' @param newdata a data.frame with the same structure and the same levels as used in \code{trainMOA}
+#' @param object an object of class \code{MOA_trainedmodel}, as returned by \code{\link{train}}
+#' @param newdata a data.frame with the same structure and the same levels as used in \code{train}
 #' @param type a character string, either 'response' or 'votes'
 #' @param transFUN a function which is used on \code{newdata} 
 #' before applying \code{\link{model.frame}}. 
@@ -178,7 +132,7 @@ train <- function(model, formula, data, subset, na.action, transFUN=identity, ch
 #' @return A matrix of votes or a vector with the predicted class 
 #' @export 
 #' @S3method predict MOA_trainedmodel
-#' @seealso \code{\link{trainMOA}}
+#' @seealso \code{\link{train}}
 #' @examples
 #' ## Hoeffdingtree
 #' hdt <- HoeffdingTree(numericEstimator = "GaussianNumericAttributeClassObserver")

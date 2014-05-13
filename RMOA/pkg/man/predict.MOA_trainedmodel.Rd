@@ -7,10 +7,10 @@
 }
 \arguments{
   \item{object}{an object of class \code{MOA_trainedmodel},
-  as returned by \code{\link{trainMOA}}}
+  as returned by \code{\link{train}}}
 
   \item{newdata}{a data.frame with the same structure and
-  the same levels as used in \code{trainMOA}}
+  the same levels as used in \code{train}}
 
   \item{type}{a character string, either 'response' or
   'votes'}
@@ -60,6 +60,6 @@ scores <- predict(hdtreetrained, newdata=traintest$testset, type="votes")
 head(scores)
 }
 \seealso{
-\code{\link{trainMOA}}
+\code{\link{train}}
 }
 
