@@ -45,9 +45,10 @@
 #' mymodel <- trainMOA(model = hdt, Species ~ Sepal.Length + Sepal.Width + Petal.Length, 
 #'  data = irisdatastream, chunksize = 10)
 #' mymodel$model
-#' mymodel$model <- trainMOA(model = hdt, 
+#' irisdatastream$reset()
+#' mymodel <- trainMOA(model = hdt, 
 #'  Species ~ Sepal.Length + Sepal.Width + Petal.Length + Petal.Length^2, 
-#'  data = irisdatastream, chunksize = 10, reset=TRUE)
+#'  data = irisdatastream, chunksize = 10, reset=TRUE, trace=TRUE)
 #' mymodel$model
 trainMOA <- function(model, formula, data, subset, na.action, transFUN=identity, chunksize=1000, reset=TRUE, trace=FALSE){
   mc <- match.call()
@@ -92,7 +93,6 @@ trainMOA <- function(model, formula, data, subset, na.action, transFUN=identity,
     if(is.null(datachunk)){
       break
     }
-    data$hasread(nrow(datachunk))
     datachunk <- transFUN(datachunk)  
     traindata <- eval(mf)      
     if(i == 1){

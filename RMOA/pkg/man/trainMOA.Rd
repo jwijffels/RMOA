@@ -72,9 +72,10 @@ irisdatastream$get_points(3)
 mymodel <- trainMOA(model = hdt, Species ~ Sepal.Length + Sepal.Width + Petal.Length,
  data = irisdatastream, chunksize = 10)
 mymodel$model
-mymodel$model <- trainMOA(model = hdt,
+irisdatastream$reset()
+mymodel <- trainMOA(model = hdt,
  Species ~ Sepal.Length + Sepal.Width + Petal.Length + Petal.Length^2,
- data = irisdatastream, chunksize = 10, reset=TRUE)
+ data = irisdatastream, chunksize = 10, reset=TRUE, trace=TRUE)
 mymodel$model
 }
 \seealso{

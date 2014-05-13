@@ -54,8 +54,9 @@ datastream$methods(
   isfinished = function(){
     .self$finished
   },
-  resetstate = function(){
+  reset = function(){
     .self$state <- 0L
+    .self$processed <- 0L
     .self$finished <- FALSE
   },
   show = function() {
