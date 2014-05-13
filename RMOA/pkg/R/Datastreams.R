@@ -56,6 +56,7 @@ datastream$methods(
   },
   resetstate = function(){
     .self$state <- 0L
+    .self$finished <- FALSE
   },
   show = function() {
     cat("Reference object of class", classLabel(class(.self)), "\n")
@@ -257,11 +258,11 @@ datastream_dataframe$methods(
     cat(" NROWS:", nrow(.self$data), "\n")
   },
   get_points = function(n=1, ...) {
-    if(.self$state > nrow(.self$data) || .self$state + (n-1)  > nrow(.self$data)){
+    if(.self$state > nrow(.self$data)){
       .self$hasfinished()
       return(invisible())
     }else{
-      x <- .self$data[.self$state:(.self$state+n-1), , drop=FALSE]
+      x <- .self$data[.self$state:min(.self$state+n-1, nrow(.self$data)), , drop=FALSE]
       .self$hasread(nrow(x))  
       return(x)
     }
@@ -314,11 +315,11 @@ datastream_matrix$methods(
     cat(" NROWS:", nrow(.self$data), "\n")
   },
   get_points = function(n=1, ...) {
-    if(.self$state > nrow(.self$data) || .self$state + (n-1)  > nrow(.self$data)){
+    if(.self$state > nrow(.self$data)){
       .self$hasfinished()
       return(invisible())
     }else{
-      x <- .self$data[.self$state:(.self$state+n-1), , drop=FALSE]
+      x <- .self$data[.self$state:min(.self$state+n-1, nrow(.self$data)), , drop=FALSE]
       .self$hasread(nrow(x))  
       return(x)
     }
@@ -373,11 +374,11 @@ datastream_ffdf$methods(
     cat(" NROWS:", nrow(.self$data), "\n")
   },
   get_points = function(n=1, ...) {
-    if(.self$state > nrow(.self$data) || .self$state + (n-1)  > nrow(.self$data)){
+    if(.self$state > nrow(.self$data)){
       .self$hasfinished()
       return(invisible())
     }else{
-      x <- .self$data[.self$state:(.self$state+n-1), , drop=FALSE]
+      x <- .self$data[.self$state:min(.self$state+n-1, nrow(.self$data)), , drop=FALSE]
       .self$hasread(nrow(x))  
       return(x)
     }
