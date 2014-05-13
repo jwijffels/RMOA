@@ -35,7 +35,7 @@ iris <- factorise(iris)
 irisdatastream <- datastream_dataframe(data=iris)
 
 ## Train the HoeffdingTree on the iris dataset
-mymodel <- train(model = hdt, Species ~ Sepal.Length + Sepal.Width + Petal.Length, data = irisdatastream)
+mymodel <- trainMOA(model = hdt, Species ~ Sepal.Length + Sepal.Width + Petal.Length, data = irisdatastream)
 
 ## Predict using the HoeffdingTree on the iris dataset
 scores <- predict(mymodel, newdata=iris, type="response")
