@@ -48,4 +48,19 @@ scores <- predict(mymodel, newdata=iris, type="votes")
 head(scores)
 ```
 
+Streams
+=========
+
+Data streams are implemented for classic data in R (data.frame, matrix), data in files (csv, delimited, flat table)
+as well as out-of memory data in an ffdf (ff package).
+
+
+Models
+=========
+
+Currently RMOA focusses on classification models (as the stream package in R already allows clustering).
+
+Classification models which are possible through RMOA are:
+
+AbstractAMRules, AccuracyUpdatedEnsemble, AccuracyWeightedEnsemble, ActiveClassifier, ChangeDetectorLearner, DACC, DecisionStump, DriftDetectionMethodClassifier, HoeffdingOptionTree, HoeffdingTree, LeveragingBag, LimAttClassifier, MajorityClass, MajorityLabelset, NaiveBayes, NaiveBayesMultinomial, NoChange, OCBoost, OnlineAccuracyUpdatedEnsemble, ORTO, OzaBag, OzaBagAdwin, OzaBoost, OzaBoostAdwin, Perceptron, Perceptron, RandomRules, RuleClassifier, SGD, SPegasos, TargetMean, TemporallyAugmentedClassifier, WeightedMajorityAlgorithm, WEKAClassifier
 
