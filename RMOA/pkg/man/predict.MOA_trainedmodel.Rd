@@ -1,0 +1,65 @@
+\name{predict.MOA_trainedmodel}
+\alias{predict.MOA_trainedmodel}
+\title{Predict using a MOA classifier on a new dataset}
+\usage{
+\method{predict}{MOA_trainedmodel}(object, newdata, type = "response",
+  transFUN = object$transFUN, ...)
+}
+\arguments{
+  \item{object}{an object of class \code{MOA_trainedmodel},
+  as returned by \code{\link{trainMOA}}}
+
+  \item{newdata}{a data.frame with the same structure and
+  the same levels as used in \code{trainMOA}}
+
+  \item{type}{a character string, either 'response' or
+  'votes'}
+
+  \item{transFUN}{a function which is used on
+  \code{newdata} before applying \code{\link{model.frame}}.
+  Useful if you want to change the results
+  \code{get_points} on the datastream (e.g. for making sure
+  the factor levels are the same in each chunk of
+  processing, some data cleaning, ...). Defaults to
+  \code{transFUN} available in \code{object}.}
+
+  \item{...}{other arguments, currently not used yet}
+}
+\value{
+A matrix of votes or a vector with the predicted class
+}
+\description{
+Predict using a MOA classifier on a new dataset. Make sure
+the new dataset has the same structure and the same levels
+as \code{get_points} returns on the datastream which was
+used in \code{train}
+}
+\examples{
+## Hoeffdingtree
+hdt <- HoeffdingTree(numericEstimator = "GaussianNumericAttributeClassObserver")
+data(iris)
+## Make a training set
+iris <- factorise(iris)
+traintest <- list()
+traintest$trainidx <- sample(nrow(iris), size=nrow(iris)/2)
+traintest$trainingset <- iris[traintest$trainidx, ]
+traintest$testset <- iris[-traintest$trainidx, ]
+irisdatastream <- datastream_dataframe(data=traintest$trainingset)
+## Train the model
+hdtreetrained <- train(model = hdt,
+ Species ~ Sepal.Length + Sepal.Width + Petal.Length + Petal.Width,
+ data = irisdatastream)
+
+## Score the model on the holdoutset
+scores <- predict(hdtreetrained,
+   newdata=traintest$testset[, c("Sepal.Length","Sepal.Width","Petal.Length","Petal.Width")],
+   type="response")
+str(scores)
+table(scores, traintest$testset$Species)
+scores <- predict(hdtreetrained, newdata=traintest$testset, type="votes")
+head(scores)
+}
+\seealso{
+\code{\link{trainMOA}}
+}
+

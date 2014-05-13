@@ -57,10 +57,27 @@ trainMOA <- function(data, model, response, reset=TRUE, trace=FALSE){
 #' @param na.action a function which indicates what should happen when the data contain \code{NA}s. 
 #' See \code{\link{model.frame}} for details.
 #' @param transFUN a function which is used after obtaining \code{chunksize} number of rows 
-#' from the \code{data} datastream before applying \code{\link{model.frame}}. Defaults to \code{\link{identity}}
-#' @param chunksize the number of rows to obtain from the \code{data} datastream in one chunk of model processing
-#' @param reset logical indicating to reset the \code{MOA_classifier}. Defaults to TRUE.
-#' @return An object of class \code{MOA_classifier}
+#' from the \code{data} datastream before applying \code{\link{model.frame}}. Useful if you want to 
+#' change the results \code{get_points} on the datastream 
+#' (e.g. for making sure the factor levels are the same in each chunk of processing, some data cleaning, ...). 
+#' Defaults to \code{\link{identity}}.
+#' @param chunksize the number of rows to obtain from the \code{data} datastream in one chunk of model processing.
+#' Defaults to 1000. Can be used to speed up things according to the backbone architecture of
+#' the datastream.
+#' @param reset logical indicating to reset the \code{MOA_classifier} so that it forgets what it 
+#' already has learned. Defaults to TRUE.
+#' @param trace logical, indicating to show information on how many datastream chunks are already processed
+#' as a \code{message}.
+#' @return An object of class MOA_trainedmodel which is a list with elements
+#' \itemize{
+#' \item{model: the updated supplied \code{model} object of class \code{MOA_classifier}}
+#' \item{call: the matched call}
+#' \item{na.action: the vatlue of na.action}
+#' \item{terms: the \code{terms} in the model}
+#' \item{transFUN: the transFUN argument}
+#' }
+#' @seealso \code{\link{MOA_classifier}}, \code{\link{datastream_file}}, \code{\link{datastream_dataframe}}, 
+#' \code{\link{datastream_matrix}}, \code{\link{datastream_ffdf}}, \code{\link{datastream}}
 #' @export 
 #' @examples
 #' hdt <- HoeffdingTree(numericEstimator = "GaussianNumericAttributeClassObserver")
@@ -68,22 +85,21 @@ trainMOA <- function(data, model, response, reset=TRUE, trace=FALSE){
 #' data(iris)
 #' iris <- factorise(iris)
 #' irisdatastream <- datastream_dataframe(data=iris)
-#' train(model = hdt, Species ~ Sepal.Length + Sepal.Width + Petal.Length, 
+#' irisdatastream$get_points(3)
+#' 
+#' mymodel <- train(model = hdt, Species ~ Sepal.Length + Sepal.Width + Petal.Length, 
 #'  data = irisdatastream, chunksize = 10)
-#' hdt
-#' train(model = hdt, Species ~ Sepal.Length + Sepal.Width + Petal.Length + Petal.Length^2, 
+#' mymodel$model
+#' mymodel$model <- train(model = hdt, 
+#'  Species ~ Sepal.Length + Sepal.Width + Petal.Length + Petal.Length^2, 
 #'  data = irisdatastream, chunksize = 10, reset=TRUE)
-#' hdt
-train <- function(model, formula, data, subset, na.action, transFUN=identity, chunksize=1000, reset=TRUE){
+#' mymodel$model
+train <- function(model, formula, data, subset, na.action, transFUN=identity, chunksize=1000, reset=TRUE, trace=FALSE){
   mc <- match.call()
   mf <- mc[c(1L, match(c("formula", "data", "subset", "na.action"), names(mc), 0L))]
   mf[[1L]] <- as.name("model.frame")
   mf[[3L]] <- as.name("datachunk")
   mf$drop.unused.levels <- FALSE
-  terms <- attr(mf, "terms")
-  if (any(attr(terms, "order") > 1L)){
-    stop("Interactions are currently not allowed.")
-  }
   setmodelcontext <- function(model, data, response){
     # build the weka instances structure
     atts <- MOAattributes(data=data)
@@ -110,8 +126,12 @@ train <- function(model, formula, data, subset, na.action, transFUN=identity, ch
   if(reset){
     .jcall(model$moamodel, "V", "resetLearning") 
   }  
-  i <- 0
+  terms <- terms(formula)
+  i <- 1
   while(!data$isfinished()){
+    if(trace){
+      message(sprintf("%s Running chunk %s: instances %s:%s", Sys.time(), i, (i*chunksize)-chunksize, i*chunksize))
+    }
     ### Get data of chunk and extract the model.frame
     datachunk <- data$get_points(chunksize)
     if(is.null(datachunk)){
@@ -120,7 +140,8 @@ train <- function(model, formula, data, subset, na.action, transFUN=identity, ch
     data$hasread(nrow(datachunk))
     datachunk <- transFUN(datachunk)  
     traindata <- eval(mf)      
-    if(i == 0){
+    if(i == 1){
+      terms <- terms(traindata)
       ### Set up the data structure in MOA (levels, columns, ...)
       ct <- setmodelcontext(model=model, data=traindata, response=all.vars(formula)[1])
       model <- ct$model    
@@ -129,38 +150,69 @@ train <- function(model, formula, data, subset, na.action, transFUN=identity, ch
     model <- trainchunk(model = model, traindata = traindata, allinstances = ct$allinstances)  
     i <- i + 1
   }
-  invisible(model)
+  out <- list()
+  out$model <- model
+  out$call <- mc
+  out$na.action <- attr(mf, "na.action")
+  out$terms <- terms
+  out$transFUN <- transFUN
+  class(out) <- "MOA_trainedmodel"
+  out
 } 
 
 
-#' Predict using a MOA classifier
+#' Predict using a MOA classifier on a new dataset
 #'
-#' Predict using a MOA classifier
+#' Predict using a MOA classifier on a new dataset. Make sure the new dataset has the same structure
+#' and the same levels as \code{get_points} returns on the datastream which was used in \code{train}
 #'
-#' @param object an object of class  \code{MOA_classifier}
+#' @param object an object of class \code{MOA_trainedmodel}, as returned by \code{\link{trainMOA}}
 #' @param newdata a data.frame with the same structure and the same levels as used in \code{trainMOA}
 #' @param type a character string, either 'response' or 'votes'
+#' @param transFUN a function which is used on \code{newdata} 
+#' before applying \code{\link{model.frame}}. 
+#' Useful if you want to change the results \code{get_points} on the datastream 
+#' (e.g. for making sure the factor levels are the same in each chunk of processing, some data cleaning, ...). 
+#' Defaults to \code{transFUN} available in \code{object}.
 #' @param ... other arguments, currently not used yet
 #' @return A matrix of votes or a vector with the predicted class 
 #' @export 
-#' @S3method predict MOA_classifier
+#' @S3method predict MOA_trainedmodel
+#' @seealso \code{\link{trainMOA}}
 #' @examples
+#' ## Hoeffdingtree
 #' hdt <- HoeffdingTree(numericEstimator = "GaussianNumericAttributeClassObserver")
-#' hdt
 #' data(iris)
+#' ## Make a training set
 #' iris <- factorise(iris)
-#' trainMOA(data=iris[sample(nrow(iris), size=round(nrow(iris)/2), replace=TRUE), ], 
-#'          model=hdt, response="Species")
-#' hdt
-#' scores <- predict(hdt, newdata= iris[, setdiff(names(iris), "Species")], type="response")
+#' traintest <- list()
+#' traintest$trainidx <- sample(nrow(iris), size=nrow(iris)/2)
+#' traintest$trainingset <- iris[traintest$trainidx, ]
+#' traintest$testset <- iris[-traintest$trainidx, ]
+#' irisdatastream <- datastream_dataframe(data=traintest$trainingset)
+#' ## Train the model
+#' hdtreetrained <- train(model = hdt, 
+#'  Species ~ Sepal.Length + Sepal.Width + Petal.Length + Petal.Width, 
+#'  data = irisdatastream)
+#' 
+#' ## Score the model on the holdoutset
+#' scores <- predict(hdtreetrained, 
+#'    newdata=traintest$testset[, c("Sepal.Length","Sepal.Width","Petal.Length","Petal.Width")], 
+#'    type="response")
 #' str(scores)
-#' table(scores, iris$Species)
-#' scores <- predict(hdt, newdata= iris[, setdiff(names(iris), "Species")], type="votes")
+#' table(scores, traintest$testset$Species)
+#' scores <- predict(hdtreetrained, newdata=traintest$testset, type="votes")
 #' head(scores)
-predict.MOA_classifier <- function(object, newdata, type="response", ...){
-  if(!.jcall(object$moamodel, "Z", "trainingHasStarted")){
+predict.MOA_trainedmodel <- function(object, newdata, type="response", transFUN=object$transFUN, ...){  
+  if(!.jcall(object$model$moamodel, "Z", "trainingHasStarted")){
     stop("Model is not trained yet")
   }
+  ## Apply transFUN and model.frame
+  newdata <- transFUN(newdata)
+  Terms <- delete.response(object$terms)
+  newdata <- model.frame(Terms, newdata)
+  
+  object <- object$model
   columnnames <- fields(object)
   newdata[[columnnames$response]] <- factor(NA, levels = columnnames$responselevels) ## Needs the response data to create DenseInstance but this is unknown
   newdata <- as.train(newdata[, columnnames$attribute.names, drop = FALSE])
@@ -177,10 +229,12 @@ predict.MOA_classifier <- function(object, newdata, type="response", ...){
     scores[j, ] <- object$moamodel$getVotesForInstance(oneinstance)
   }
   if(type == "votes"){
+    colnames(scores) <- columnnames$responselevels
     return(scores)
   }else if(type == "response"){
     scores <- apply(scores, MARGIN=1, which.max) 
-    return(sapply(scores, FUN=function(x) columnnames$responselevels[x]))
+    scores <- sapply(scores, FUN=function(x) columnnames$responselevels[x])
+    return(scores)
   }    
 }
 

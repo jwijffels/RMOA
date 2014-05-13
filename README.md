@@ -29,18 +29,19 @@ require(RMOA)
 hdt <- HoeffdingTree(numericEstimator = "GaussianNumericAttributeClassObserver")
 hdt
 
-## Train the HoeffdingTree on the iris dataset
+## Define a stream - e.g. a stream based on a data.frame
 data(iris)
 iris <- factorise(iris)
-trainMOA(data=iris[sample(nrow(iris), size=round(nrow(iris)/2), replace=TRUE), ], 
-         model=hdt, response="Species")
-hdt
+irisdatastream <- datastream_dataframe(data=iris)
 
-## Predict the HoeffdingTree on the iris dataset
-scores <- predict(hdt, newdata= iris, type="response")
+## Train the HoeffdingTree on the iris dataset
+mymodel <- train(model = hdt, Species ~ Sepal.Length + Sepal.Width + Petal.Length, data = irisdatastream)
+
+## Predict using the HoeffdingTree on the iris dataset
+scores <- predict(mymodel, newdata=iris, type="response")
 str(scores)
 table(scores, iris$Species)
-scores <- predict(hdt, newdata= iris, type="votes")
+scores <- predict(mymodel, newdata=iris, type="votes")
 head(scores)
 ```
 

@@ -3,7 +3,7 @@
 \title{Train a MOA classifier (e.g. a HoeffdingTree) on a datastream}
 \usage{
 train(model, formula, data, subset, na.action, transFUN = identity,
-  chunksize = 1000, reset = TRUE)
+  chunksize = 1000, reset = TRUE, trace = FALSE)
 }
 \arguments{
   \item{model}{an object of class \code{MOA_model}, as
@@ -16,8 +16,8 @@ train(model, formula, data, subset, na.action, transFUN = identity,
   \item{data}{an object of class \code{\link{datastream}}
   set up e.g. with \code{\link{datastream_file}},
   \code{\link{datastream_dataframe}},
-  \code{\link{datastream_matrix}} and
-  \code{\link{datastream_ffdf}}}
+  \code{\link{datastream_matrix}},
+  \code{\link{datastream_ffdf}} or your own datastream.}
 
   \item{subset}{an optional vector specifying a subset of
   observations to be used in the fitting process.}
@@ -29,16 +29,33 @@ train(model, formula, data, subset, na.action, transFUN = identity,
   \item{transFUN}{a function which is used after obtaining
   \code{chunksize} number of rows from the \code{data}
   datastream before applying \code{\link{model.frame}}.
-  Defaults to \code{\link{identity}}}
+  Useful if you want to change the results
+  \code{get_points} on the datastream (e.g. for making sure
+  the factor levels are the same in each chunk of
+  processing, some data cleaning, ...). Defaults to
+  \code{\link{identity}}.}
 
   \item{chunksize}{the number of rows to obtain from the
-  \code{data} datastream in one chunk of model processing}
+  \code{data} datastream in one chunk of model processing.
+  Defaults to 1000. Can be used to speed up things
+  according to the backbone architecture of the
+  datastream.}
 
   \item{reset}{logical indicating to reset the
-  \code{MOA_classifier}. Defaults to TRUE.}
+  \code{MOA_classifier} so that it forgets what it already
+  has learned. Defaults to TRUE.}
+
+  \item{trace}{logical, indicating to show information on
+  how many datastream chunks are already processed as a
+  \code{message}.}
 }
 \value{
-An object of class \code{MOA_classifier}
+An object of class MOA_trainedmodel which is a list with
+elements \itemize{ \item{model: the updated supplied
+\code{model} object of class \code{MOA_classifier}}
+\item{call: the matched call} \item{na.action: the vatlue
+of na.action} \item{terms: the \code{terms} in the model}
+\item{transFUN: the transFUN argument} }
 }
 \description{
 Train a MOA classifier (e.g. a HoeffdingTree) on a
@@ -50,11 +67,21 @@ hdt
 data(iris)
 iris <- factorise(iris)
 irisdatastream <- datastream_dataframe(data=iris)
-train(model = hdt, Species ~ Sepal.Length + Sepal.Width + Petal.Length,
+irisdatastream$get_points(3)
+
+mymodel <- train(model = hdt, Species ~ Sepal.Length + Sepal.Width + Petal.Length,
  data = irisdatastream, chunksize = 10)
-hdt
-train(model = hdt, Species ~ Sepal.Length + Sepal.Width + Petal.Length + Petal.Length^2,
+mymodel$model
+mymodel$model <- train(model = hdt,
+ Species ~ Sepal.Length + Sepal.Width + Petal.Length + Petal.Length^2,
  data = irisdatastream, chunksize = 10, reset=TRUE)
-hdt
+mymodel$model
+}
+\seealso{
+\code{\link{MOA_classifier}},
+\code{\link{datastream_file}},
+\code{\link{datastream_dataframe}},
+\code{\link{datastream_matrix}},
+\code{\link{datastream_ffdf}}, \code{\link{datastream}}
 }
 
