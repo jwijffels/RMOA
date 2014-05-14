@@ -2,8 +2,8 @@
 \alias{trainMOA}
 \title{Train a MOA classifier (e.g. a HoeffdingTree) on a datastream}
 \usage{
-trainMOA(model, formula, data, subset, na.action, transFUN = identity,
-  chunksize = 1000, reset = TRUE, trace = FALSE)
+trainMOA(model, formula, data, subset, na.action = na.exclude,
+  transFUN = identity, chunksize = 1000, reset = TRUE, trace = FALSE)
 }
 \arguments{
   \item{model}{an object of class \code{MOA_model}, as
@@ -24,7 +24,8 @@ trainMOA(model, formula, data, subset, na.action, transFUN = identity,
 
   \item{na.action}{a function which indicates what should
   happen when the data contain \code{NA}s. See
-  \code{\link{model.frame}} for details.}
+  \code{\link{model.frame}} for details. Defaults to
+  \code{\link{na.exclude}}.}
 
   \item{transFUN}{a function which is used after obtaining
   \code{chunksize} number of rows from the \code{data}

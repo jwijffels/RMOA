@@ -9,7 +9,7 @@
 #' \code{\link{datastream_dataframe}}, \code{\link{datastream_matrix}}, \code{\link{datastream_ffdf}} or your own datastream.
 #' @param subset an optional vector specifying a subset of observations to be used in the fitting process.
 #' @param na.action a function which indicates what should happen when the data contain \code{NA}s. 
-#' See \code{\link{model.frame}} for details.
+#' See \code{\link{model.frame}} for details. Defaults to \code{\link{na.exclude}}.
 #' @param transFUN a function which is used after obtaining \code{chunksize} number of rows 
 #' from the \code{data} datastream before applying \code{\link{model.frame}}. Useful if you want to 
 #' change the results \code{get_points} on the datastream 
@@ -50,7 +50,7 @@
 #'  Species ~ Sepal.Length + Sepal.Width + Petal.Length + Petal.Length^2, 
 #'  data = irisdatastream, chunksize = 10, reset=TRUE, trace=TRUE)
 #' mymodel$model
-trainMOA <- function(model, formula, data, subset, na.action, transFUN=identity, chunksize=1000, reset=TRUE, trace=FALSE){
+trainMOA <- function(model, formula, data, subset, na.action=na.exclude, transFUN=identity, chunksize=1000, reset=TRUE, trace=FALSE){
   mc <- match.call()
   mf <- mc[c(1L, match(c("formula", "data", "subset", "na.action"), names(mc), 0L))]
   mf[[1L]] <- as.name("model.frame")
@@ -82,7 +82,7 @@ trainMOA <- function(model, formula, data, subset, na.action, transFUN=identity,
   if(reset){
     .jcall(model$moamodel, "V", "resetLearning") 
   }  
-  terms <- terms(formula)
+  terms <- NULL
   i <- 1
   while(!data$isfinished()){
     if(trace){
@@ -104,6 +104,9 @@ trainMOA <- function(model, formula, data, subset, na.action, transFUN=identity,
     ### Learn the model
     model <- trainchunk(model = model, traindata = traindata, allinstances = ct$allinstances)  
     i <- i + 1
+  }
+  if(is.null(terms)){
+    terms <- terms(formula)
   }
   out <- list()
   out$model <- model
