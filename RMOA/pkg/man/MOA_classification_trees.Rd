@@ -1,8 +1,12 @@
-\name{HoeffdingTree}
+\name{MOA_classification_trees}
 \alias{HoeffdingTree}
-\title{Create a HoeffdingTree}
+\alias{MOA_classification_trees}
+\alias{NaiveBayes}
+\title{MOA classification trees}
 \usage{
 HoeffdingTree(control = NULL, ...)
+
+NaiveBayes(control = NULL, ...)
 }
 \arguments{
   \item{control}{an object of class \code{MOAmodelOptions}
@@ -13,10 +17,10 @@ HoeffdingTree(control = NULL, ...)
   to NULL. Ignored if \code{control} is supplied}
 }
 \value{
-An object of class \code{HoeffdingTree}
+An object of class \code{MOA_classifier}
 }
 \description{
-Create a HoeffdingTree
+MOA classification trees
 }
 \examples{
 ctrl <- MOAoptions(model = "HoeffdingTree", leafprediction = "MC",

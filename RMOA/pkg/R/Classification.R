@@ -47,17 +47,17 @@ print.MOA_classifier <- function(x, ...){
   cat(x$moamodel$toString())  
 }
 
-
-#' Create a HoeffdingTree
+#' MOA classification trees
 #'
-#' Create a HoeffdingTree
+#' MOA classification trees
 #'
+#' @name MOA_classification_trees
 #' @param control an object of class \code{MOAmodelOptions} as obtained by calling \code{\link{MOAoptions}}
 #' @param ... options of parameters passed on to \code{\link{MOAoptions}}, in case \code{control} is left to NULL. 
 #' Ignored if \code{control} is supplied
-#' @return An object of class \code{HoeffdingTree}
-#' @seealso \code{\link{MOAoptions}}
-#' @export 
+#' @return An object of class \code{MOA_classifier} which sets up an untrained MOA model,
+#' which can be trained using \code{\link{trainMOA}} 
+#' @seealso \code{\link{MOAoptions}}, \code{\link{trainMOA}}
 #' @examples
 #' ctrl <- MOAoptions(model = "HoeffdingTree", leafprediction = "MC", 
 #'    removePoorAtts = TRUE, binarySplits = TRUE, tieThreshold = 0.20)
@@ -65,8 +65,18 @@ print.MOA_classifier <- function(x, ...){
 #' hdt
 #' hdt <- HoeffdingTree(numericEstimator = "GaussianNumericAttributeClassObserver")
 #' hdt
+NULL
+
+
+#' @export 
+#' @rdname MOA_classification_trees
 HoeffdingTree <- function(control=NULL, ...) {
   MOA_classifier(model = "HoeffdingTree", control=control, ...)
+}
+#' @export 
+#' @rdname MOA_classification_trees
+NaiveBayes <- function(control=NULL, ...) {
+  MOA_classifier(model = "NaiveBayes", control=control, ...)
 }
 
 
