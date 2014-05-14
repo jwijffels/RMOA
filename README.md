@@ -2,6 +2,7 @@ RMOA
 =========
 
 RMOA allows to interface R with MOA (http://moa.cms.waikato.ac.nz/).
+
 RMOA interfaces with MOA version 2014.04.
 
 
@@ -59,8 +60,7 @@ Models
 =========
 
 Currently RMOA focusses on classification models (as the stream package in R already allows clustering).
-
 Classification models which are possible through RMOA are:
 
-AbstractAMRules, AccuracyUpdatedEnsemble, AccuracyWeightedEnsemble, ActiveClassifier, ChangeDetectorLearner, DACC, DecisionStump, DriftDetectionMethodClassifier, HoeffdingOptionTree, HoeffdingTree, LeveragingBag, LimAttClassifier, MajorityClass, MajorityLabelset, NaiveBayes, NaiveBayesMultinomial, NoChange, OCBoost, OnlineAccuracyUpdatedEnsemble, ORTO, OzaBag, OzaBagAdwin, OzaBoost, OzaBoostAdwin, Perceptron, Perceptron, RandomRules, RuleClassifier, SGD, SPegasos, TargetMean, TemporallyAugmentedClassifier, WeightedMajorityAlgorithm, WEKAClassifier
+Trees: AdaHoeffdingOptionTree, ASHoeffdingTree, DecisionStump, HoeffdingAdaptiveTree, HoeffdingOptionTree, HoeffdingTree, LimAttHoeffdingTree, RandomHoeffdingTree, NaiveBayes, NaiveBayesMultinomial
 

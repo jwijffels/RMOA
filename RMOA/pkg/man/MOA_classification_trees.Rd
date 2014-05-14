@@ -1,12 +1,36 @@
 \name{MOA_classification_trees}
+\alias{ASHoeffdingTree}
+\alias{AdaHoeffdingOptionTree}
+\alias{DecisionStump}
+\alias{HoeffdingAdaptiveTree}
+\alias{HoeffdingOptionTree}
 \alias{HoeffdingTree}
+\alias{LimAttHoeffdingTree}
 \alias{MOA_classification_trees}
 \alias{NaiveBayes}
+\alias{NaiveBayesMultinomial}
+\alias{RandomHoeffdingTree}
 \title{MOA classification trees}
 \usage{
+AdaHoeffdingOptionTree(control = NULL, ...)
+
+ASHoeffdingTree(control = NULL, ...)
+
+DecisionStump(control = NULL, ...)
+
+HoeffdingAdaptiveTree(control = NULL, ...)
+
+HoeffdingOptionTree(control = NULL, ...)
+
 HoeffdingTree(control = NULL, ...)
 
+LimAttHoeffdingTree(control = NULL, ...)
+
+RandomHoeffdingTree(control = NULL, ...)
+
 NaiveBayes(control = NULL, ...)
+
+NaiveBayesMultinomial(control = NULL, ...)
 }
 \arguments{
   \item{control}{an object of class \code{MOAmodelOptions}
@@ -17,7 +41,9 @@ NaiveBayes(control = NULL, ...)
   to NULL. Ignored if \code{control} is supplied}
 }
 \value{
-An object of class \code{MOA_classifier}
+An object of class \code{MOA_classifier} which sets up an
+untrained MOA model, which can be trained using
+\code{\link{trainMOA}}
 }
 \description{
 MOA classification trees
@@ -31,6 +57,6 @@ hdt <- HoeffdingTree(numericEstimator = "GaussianNumericAttributeClassObserver")
 hdt
 }
 \seealso{
-\code{\link{MOAoptions}}
+\code{\link{MOAoptions}}, \code{\link{trainMOA}}
 }
 

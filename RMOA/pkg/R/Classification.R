@@ -68,6 +68,33 @@ print.MOA_classifier <- function(x, ...){
 NULL
 
 
+## TODO: FIMTDD, ORTO
+
+#' @export 
+#' @rdname MOA_classification_trees
+AdaHoeffdingOptionTree <- function(control=NULL, ...) {
+  MOA_classifier(model = "AdaHoeffdingOptionTree", control=control, ...)
+}
+#' @export 
+#' @rdname MOA_classification_trees
+ASHoeffdingTree <- function(control=NULL, ...) {
+  MOA_classifier(model = "ASHoeffdingTree", control=control, ...)
+}
+#' @export 
+#' @rdname MOA_classification_trees
+DecisionStump <- function(control=NULL, ...) {
+  MOA_classifier(model = "DecisionStump", control=control, ...)
+}
+#' @export 
+#' @rdname MOA_classification_trees
+HoeffdingAdaptiveTree <- function(control=NULL, ...) {
+  MOA_classifier(model = "HoeffdingAdaptiveTree", control=control, ...)
+}
+#' @export 
+#' @rdname MOA_classification_trees
+HoeffdingOptionTree <- function(control=NULL, ...) {
+  MOA_classifier(model = "HoeffdingOptionTree", control=control, ...)
+}
 #' @export 
 #' @rdname MOA_classification_trees
 HoeffdingTree <- function(control=NULL, ...) {
@@ -75,10 +102,24 @@ HoeffdingTree <- function(control=NULL, ...) {
 }
 #' @export 
 #' @rdname MOA_classification_trees
+LimAttHoeffdingTree <- function(control=NULL, ...) {
+  MOA_classifier(model = "LimAttHoeffdingTree", control=control, ...)
+}
+#' @export 
+#' @rdname MOA_classification_trees
+RandomHoeffdingTree <- function(control=NULL, ...) {
+  MOA_classifier(model = "RandomHoeffdingTree", control=control, ...)
+}
+#' @export 
+#' @rdname MOA_classification_trees
 NaiveBayes <- function(control=NULL, ...) {
   MOA_classifier(model = "NaiveBayes", control=control, ...)
 }
-
+#' @export 
+#' @rdname MOA_classification_trees
+NaiveBayesMultinomial <- function(control=NULL, ...) {
+  MOA_classifier(model = "NaiveBayesMultinomial", control=control, ...)
+}
 
 
 #' Summary statistics of a MOA classifier 
