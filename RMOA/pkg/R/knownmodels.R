@@ -1,6 +1,6 @@
 .moaknownmodels <- c("AdaHoeffdingOptionTree", "ASHoeffdingTree", "DecisionStump", "HoeffdingAdaptiveTree", "HoeffdingOptionTree",
                      "HoeffdingTree", "LimAttHoeffdingTree", "RandomHoeffdingTree", 
-                     "NaiveBayes", "NaiveBayesMultinomial")
+                     "NaiveBayes", "NaiveBayesMultinomial","ActiveClassifier")
 
 modelclass <- function(model){  
   if(!model %in% .moaknownmodels){
@@ -16,7 +16,8 @@ modelclass <- function(model){
                    "LimAttHoeffdingTree", 
                    "RandomHoeffdingTree",
                    "NaiveBayes",
-                   "NaiveBayesMultinomial"),
+                   "NaiveBayesMultinomial",
+                   "ActiveClassifier"),
           to = c("moa/classifiers/trees/AdaHoeffdingOptionTree",
                  "moa/classifiers/trees/ASHoeffdingTree",
                  "moa/classifiers/trees/DecisionStump",
@@ -26,6 +27,7 @@ modelclass <- function(model){
                  "moa/classifiers/trees/LimAttHoeffdingTree", 
                  "moa/classifiers/trees/RandomHoeffdingTree", 
                  "moa/classifiers/bayes/NaiveBayes",
-                 "moa/classifiers/bayes/NaiveBayesMultinomial"))
+                 "moa/classifiers/bayes/NaiveBayesMultinomial",
+                 "moa/classifiers/active/ActiveClassifier"))
 }
 

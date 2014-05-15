@@ -45,5 +45,6 @@ MOAoptions(model = "LimAttHoeffdingTree")
 MOAoptions(model = "RandomHoeffdingTree")
 MOAoptions(model = "NaiveBayes")
 MOAoptions(model = "NaiveBayesMultinomial")
+MOAoptions(model = "ActiveClassifier")
 }
 

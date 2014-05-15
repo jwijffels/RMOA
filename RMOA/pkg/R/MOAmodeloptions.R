@@ -35,6 +35,7 @@
 #' MOAoptions(model = "RandomHoeffdingTree")
 #' MOAoptions(model = "NaiveBayes")
 #' MOAoptions(model = "NaiveBayesMultinomial")
+#' MOAoptions(model = "ActiveClassifier")
 MOAoptions <- function(model, ...){
   if(inherits(model, "character")){
     moamodel <- .jnew(modelclass(model))  
