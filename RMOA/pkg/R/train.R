@@ -163,7 +163,9 @@ trainMOA <- function(model, formula, data, subset, na.action=na.exclude, transFU
 #' scores <- predict(hdtreetrained, newdata=traintest$testset, type="votes")
 #' head(scores)
 predict.MOA_trainedmodel <- function(object, newdata, type="response", transFUN=object$transFUN, ...){  
-  if(!.jcall(object$model$moamodel, "Z", "trainingHasStarted")){
+  modelready <- TRUE
+  try(modelready <- .jcall(object$model$moamodel, "Z", "trainingHasStarted"), silent=TRUE)
+  if(!modelready){
     stop("Model is not trained yet")
   }
   ## Apply transFUN and model.frame
