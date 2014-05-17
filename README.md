@@ -4,6 +4,7 @@ RMOA
 RMOA allows to interface R with MOA (http://moa.cms.waikato.ac.nz/).
 
 RMOA interfaces with MOA version 2014.04.
+Documentation of MOA directed towards RMOA users can be found at http://jwijffels.github.io/RMOA/
 
 Models
 =========
