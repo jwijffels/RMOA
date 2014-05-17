@@ -47,6 +47,23 @@ str(scores)
 table(scores, iris$Species)
 scores <- predict(mymodel, newdata=iris, type="votes")
 head(scores)
+
+
+##
+## Boosting example
+##
+irisdatastream$reset()
+mymodel <- OzaBoost(ensembleSize = 30)
+mymodel <- trainMOA(model = mymodel, 
+  formula = Species ~ Sepal.Length + Sepal.Width + Petal.Length, 
+  data = irisdatastream)
+
+## Predict using the HoeffdingTree on the iris dataset
+scores <- predict(mymodel, newdata=iris, type="response")
+str(scores)
+table(scores, iris$Species)
+scores <- predict(mymodel, newdata=iris, type="votes")
+head(scores)
 ```
 
 Streams
