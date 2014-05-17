@@ -62,5 +62,49 @@ Models
 Currently RMOA focusses on classification models (as the stream package in R already allows clustering).
 Classification models which are possible through RMOA are:
 
-Trees: AdaHoeffdingOptionTree, ASHoeffdingTree, DecisionStump, HoeffdingAdaptiveTree, HoeffdingOptionTree, HoeffdingTree, LimAttHoeffdingTree, RandomHoeffdingTree, NaiveBayes, NaiveBayesMultinomial
+- Classification trees: 
+  * AdaHoeffdingOptionTree
+  * ASHoeffdingTree
+  * DecisionStump
+  * HoeffdingAdaptiveTree
+  * HoeffdingOptionTree
+  * HoeffdingTree
+  * LimAttHoeffdingTree
+  * RandomHoeffdingTree
+- Bayesian classification: 
+  * NaiveBayes
+  * NaiveBayesMultinomial
+- Active learning classification:
+  * ActiveClassifier
+- Ensemble (meta) classifiers:
+  * Bagging
+      + LeveragingBag
+      + OzaBag
+      + OzaBagAdwin
+      + OzaBagASHT
+  * Boosting
+      + OCBoost
+      + OzaBoost
+      + OzaBoostAdwin
+  * Stacking
+      + LimAttClassifier
+  * Other
+      + AccuracyUpdatedEnsemble
+      + AccuracyWeightedEnsemble
+      + ADACC
+      + DACC
+      + OnlineAccuracyUpdatedEnsemble
+      + TemporallyAugmentedClassifier
+      + WeightedMajorityAlgorithm
+
+Currently the following MOA models are not implemented in RMOA.
+- Multilabel, drift, functions, rules classifiers
+- Regression
+- Outlier detection
+- Clustering
+- Recommendation engines
+
+
+
+
 

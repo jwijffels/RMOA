@@ -159,7 +159,101 @@ ActiveClassifier <- function(control=NULL, ...) {
 }
 
 
-## TODO: FIMTDD, ORTO
+#' MOA classification using ensembles
+#'
+#' MOA classification using ensembles (bagging/boosting/stacking/other)
+#'
+#' @name MOA_classification_ensemblelearning
+#' @param control an object of class \code{MOAmodelOptions} as obtained by calling \code{\link{MOAoptions}}
+#' @param ... options of parameters passed on to \code{\link{MOAoptions}}, in case \code{control} is left to NULL. 
+#' Ignored if \code{control} is supplied
+#' @return An object of class \code{MOA_classifier} which sets up an untrained MOA model,
+#' which can be trained using \code{\link{trainMOA}} 
+#' @seealso \code{\link{MOAoptions}}, \code{\link{trainMOA}}
+#' @examples
+#' ctrl <- MOAoptions(model = "OzaBoostAdwin")
+#' mymodel <- OzaBoostAdwin(control=ctrl)
+#' mymodel
+NULL
+#' @export 
+#' @rdname MOA_classification_ensemblelearning
+AccuracyUpdatedEnsemble <- function(control=NULL, ...) {
+  MOA_classifier(model = "AccuracyUpdatedEnsemble", control=control, ...)
+}
+#' @export 
+#' @rdname MOA_classification_ensemblelearning
+AccuracyWeightedEnsemble <- function(control=NULL, ...) {
+  MOA_classifier(model = "AccuracyWeightedEnsemble", control=control, ...)
+}
+#' @export 
+#' @rdname MOA_classification_ensemblelearning
+ADACC <- function(control=NULL, ...) {
+  MOA_classifier(model = "ADACC", control=control, ...)
+}
+#' @export 
+#' @rdname MOA_classification_ensemblelearning
+DACC <- function(control=NULL, ...) {
+  MOA_classifier(model = "DACC", control=control, ...)
+}
+#' @export 
+#' @rdname MOA_classification_ensemblelearning
+LeveragingBag <- function(control=NULL, ...) {
+  MOA_classifier(model = "LeveragingBag", control=control, ...)
+}
+#' @export 
+#' @rdname MOA_classification_ensemblelearning
+LimAttClassifier <- function(control=NULL, ...) {
+  MOA_classifier(model = "LimAttClassifier", control=control, ...)
+}
+#' @export 
+#' @rdname MOA_classification_ensemblelearning
+OCBoost <- function(control=NULL, ...) {
+  MOA_classifier(model = "OCBoost", control=control, ...)
+}
+#' @export 
+#' @rdname MOA_classification_ensemblelearning
+OnlineAccuracyUpdatedEnsemble <- function(control=NULL, ...) {
+  MOA_classifier(model = "OnlineAccuracyUpdatedEnsemble", control=control, ...)
+}
+#' @export 
+#' @rdname MOA_classification_ensemblelearning
+OzaBag <- function(control=NULL, ...) {
+  MOA_classifier(model = "OzaBag", control=control, ...)
+}
+#' @export 
+#' @rdname MOA_classification_ensemblelearning
+OzaBagAdwin <- function(control=NULL, ...) {
+  MOA_classifier(model = "OzaBagAdwin", control=control, ...)
+}
+#' @export 
+#' @rdname MOA_classification_ensemblelearning
+OzaBagASHT <- function(control=NULL, ...) {
+  MOA_classifier(model = "OzaBagASHT", control=control, ...)
+}
+#' @export 
+#' @rdname MOA_classification_ensemblelearning
+OzaBoost <- function(control=NULL, ...) {
+  MOA_classifier(model = "OzaBoost", control=control, ...)
+}
+#' @export 
+#' @rdname MOA_classification_ensemblelearning
+OzaBoostAdwin <- function(control=NULL, ...) {
+  MOA_classifier(model = "OzaBoostAdwin", control=control, ...)
+}
+#' @export 
+#' @rdname MOA_classification_ensemblelearning
+TemporallyAugmentedClassifier <- function(control=NULL, ...) {
+  MOA_classifier(model = "TemporallyAugmentedClassifier", control=control, ...)
+}
+#' @export 
+#' @rdname MOA_classification_ensemblelearning
+WeightedMajorityAlgorithm <- function(control=NULL, ...) {
+  MOA_classifier(model = "WeightedMajorityAlgorithm", control=control, ...)
+}
+
+
+
+## TODO: FIMTDD, ORTO, RandomRules, WEKAClassifier
 
 #' Summary statistics of a MOA classifier 
 #'

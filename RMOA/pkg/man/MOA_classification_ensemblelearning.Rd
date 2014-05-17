@@ -1,0 +1,75 @@
+\name{MOA_classification_ensemblelearning}
+\alias{ADACC}
+\alias{AccuracyUpdatedEnsemble}
+\alias{AccuracyWeightedEnsemble}
+\alias{DACC}
+\alias{LeveragingBag}
+\alias{LimAttClassifier}
+\alias{MOA_classification_ensemblelearning}
+\alias{OCBoost}
+\alias{OnlineAccuracyUpdatedEnsemble}
+\alias{OzaBag}
+\alias{OzaBagASHT}
+\alias{OzaBagAdwin}
+\alias{OzaBoost}
+\alias{OzaBoostAdwin}
+\alias{TemporallyAugmentedClassifier}
+\alias{WeightedMajorityAlgorithm}
+\title{MOA classification using ensembles}
+\usage{
+AccuracyUpdatedEnsemble(control = NULL, ...)
+
+AccuracyWeightedEnsemble(control = NULL, ...)
+
+ADACC(control = NULL, ...)
+
+DACC(control = NULL, ...)
+
+LeveragingBag(control = NULL, ...)
+
+LimAttClassifier(control = NULL, ...)
+
+OCBoost(control = NULL, ...)
+
+OnlineAccuracyUpdatedEnsemble(control = NULL, ...)
+
+OzaBag(control = NULL, ...)
+
+OzaBagAdwin(control = NULL, ...)
+
+OzaBagASHT(control = NULL, ...)
+
+OzaBoost(control = NULL, ...)
+
+OzaBoostAdwin(control = NULL, ...)
+
+TemporallyAugmentedClassifier(control = NULL, ...)
+
+WeightedMajorityAlgorithm(control = NULL, ...)
+}
+\arguments{
+  \item{control}{an object of class \code{MOAmodelOptions}
+  as obtained by calling \code{\link{MOAoptions}}}
+
+  \item{...}{options of parameters passed on to
+  \code{\link{MOAoptions}}, in case \code{control} is left
+  to NULL. Ignored if \code{control} is supplied}
+}
+\value{
+An object of class \code{MOA_classifier} which sets up an
+untrained MOA model, which can be trained using
+\code{\link{trainMOA}}
+}
+\description{
+MOA classification using ensembles
+(bagging/boosting/stacking/other)
+}
+\examples{
+ctrl <- MOAoptions(model = "OzaBoostAdwin")
+mymodel <- OzaBoostAdwin(control=ctrl)
+mymodel
+}
+\seealso{
+\code{\link{MOAoptions}}, \code{\link{trainMOA}}
+}
+

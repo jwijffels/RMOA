@@ -1,6 +1,8 @@
-.moaknownmodels <- c("AdaHoeffdingOptionTree", "ASHoeffdingTree", "DecisionStump", "HoeffdingAdaptiveTree", "HoeffdingOptionTree",
-                     "HoeffdingTree", "LimAttHoeffdingTree", "RandomHoeffdingTree", 
-                     "NaiveBayes", "NaiveBayesMultinomial","ActiveClassifier")
+.moaknownmodels <- c("AdaHoeffdingOptionTree", "ASHoeffdingTree", "DecisionStump", "HoeffdingAdaptiveTree", "HoeffdingOptionTree","HoeffdingTree", "LimAttHoeffdingTree", "RandomHoeffdingTree", 
+                     "NaiveBayes", "NaiveBayesMultinomial",
+                     "ActiveClassifier",
+                     "AccuracyUpdatedEnsemble","AccuracyWeightedEnsemble","ADACC","DACC","LeveragingBag","LimAttClassifier","OCBoost",
+                     "OnlineAccuracyUpdatedEnsemble","OzaBag","OzaBagAdwin","OzaBagASHT","OzaBoost","OzaBoostAdwin","TemporallyAugmentedClassifier","WeightedMajorityAlgorithm")
 
 modelclass <- function(model){  
   if(!model %in% .moaknownmodels){
@@ -17,7 +19,22 @@ modelclass <- function(model){
                    "RandomHoeffdingTree",
                    "NaiveBayes",
                    "NaiveBayesMultinomial",
-                   "ActiveClassifier"),
+                   "ActiveClassifier",
+                   "AccuracyUpdatedEnsemble",
+                   "AccuracyWeightedEnsemble",
+                   "ADACC",
+                   "DACC",
+                   "LeveragingBag",
+                   "LimAttClassifier",
+                   "OCBoost",
+                   "OnlineAccuracyUpdatedEnsemble",
+                   "OzaBag",
+                   "OzaBagAdwin",
+                   "OzaBagASHT",
+                   "OzaBoost",
+                   "OzaBoostAdwin",
+                   "TemporallyAugmentedClassifier",
+                   "WeightedMajorityAlgorithm"),
           to = c("moa/classifiers/trees/AdaHoeffdingOptionTree",
                  "moa/classifiers/trees/ASHoeffdingTree",
                  "moa/classifiers/trees/DecisionStump",
@@ -28,6 +45,21 @@ modelclass <- function(model){
                  "moa/classifiers/trees/RandomHoeffdingTree", 
                  "moa/classifiers/bayes/NaiveBayes",
                  "moa/classifiers/bayes/NaiveBayesMultinomial",
-                 "moa/classifiers/active/ActiveClassifier"))
+                 "moa/classifiers/active/ActiveClassifier",
+                 "moa/classifiers/meta/AccuracyUpdatedEnsemble",
+                 "moa/classifiers/meta/AccuracyWeightedEnsemble",
+                 "moa/classifiers/meta/ADACC",
+                 "moa/classifiers/meta/DACC",
+                 "moa/classifiers/meta/LeveragingBag",
+                 "moa/classifiers/meta/LimAttClassifier",
+                 "moa/classifiers/meta/OCBoost",
+                 "moa/classifiers/meta/OnlineAccuracyUpdatedEnsemble",
+                 "moa/classifiers/meta/OzaBag",
+                 "moa/classifiers/meta/OzaBagAdwin",
+                 "moa/classifiers/meta/OzaBagASHT",
+                 "moa/classifiers/meta/OzaBoost",
+                 "moa/classifiers/meta/OzaBoostAdwin",
+                 "moa/classifiers/meta/TemporallyAugmentedClassifier",
+                 "moa/classifiers/meta/WeightedMajorityAlgorithm"))
 }
 
