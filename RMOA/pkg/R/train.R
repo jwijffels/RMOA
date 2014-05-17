@@ -22,6 +22,7 @@
 #' already has learned. Defaults to TRUE.
 #' @param trace logical, indicating to show information on how many datastream chunks are already processed
 #' as a \code{message}.
+#' @param options a names list of further options. Currently not used.
 #' @return An object of class MOA_trainedmodel which is a list with elements
 #' \itemize{
 #' \item{model: the updated supplied \code{model} object of class \code{MOA_classifier}}
@@ -50,7 +51,7 @@
 #'  Species ~ Sepal.Length + Sepal.Width + Petal.Length + Petal.Length^2, 
 #'  data = irisdatastream, chunksize = 10, reset=TRUE, trace=TRUE)
 #' mymodel$model
-trainMOA <- function(model, formula, data, subset, na.action=na.exclude, transFUN=identity, chunksize=1000, reset=TRUE, trace=FALSE){
+trainMOA <- function(model, formula, data, subset, na.action=na.exclude, transFUN=identity, chunksize=1000, reset=TRUE, trace=FALSE, options){
   mc <- match.call()
   mf <- mc[c(1L, match(c("formula", "data", "subset", "na.action"), names(mc), 0L))]
   mf[[1L]] <- as.name("model.frame")

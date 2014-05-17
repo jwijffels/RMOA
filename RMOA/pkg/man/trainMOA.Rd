@@ -3,7 +3,8 @@
 \title{Train a MOA classifier (e.g. a HoeffdingTree) on a datastream}
 \usage{
 trainMOA(model, formula, data, subset, na.action = na.exclude,
-  transFUN = identity, chunksize = 1000, reset = TRUE, trace = FALSE)
+  transFUN = identity, chunksize = 1000, reset = TRUE, trace = FALSE,
+  options)
 }
 \arguments{
   \item{model}{an object of class \code{MOA_model}, as
@@ -49,6 +50,9 @@ trainMOA(model, formula, data, subset, na.action = na.exclude,
   \item{trace}{logical, indicating to show information on
   how many datastream chunks are already processed as a
   \code{message}.}
+
+  \item{options}{a names list of further options. Currently
+  not used.}
 }
 \value{
 An object of class MOA_trainedmodel which is a list with
