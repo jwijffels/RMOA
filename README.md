@@ -114,7 +114,7 @@ Classification models which are possible through RMOA are:
       + TemporallyAugmentedClassifier
       + WeightedMajorityAlgorithm
 
-Currently the following MOA models are not implemented in RMOA.
+Currently the following MOA models are not (yet) implemented in RMOA.
 - Multilabel, drift, functions, rules classifiers
 - Regression
 - Outlier detection
