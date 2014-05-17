@@ -1,0 +1,15 @@
+citHeader("To cite RMOA in publications use:")
+
+citEntry(entry  = "Unpublished",
+  title         = "{RMOA}: Connect R with MOA to perform streaming classifications",
+  author        = personList(as.person("Jan Wijffels")),
+  year          = "2014",
+  url           = "https://github.com/jwijffels/RMOA",
+  organization  = "BNOSAC",
+  note          = "R package version 1.0",
+  textVersion   =  paste("Wijffels, J. (2014)", 
+               "Connect R with MOA to perform streaming classifications",
+               "https://github.com/jwijffels/RMOA")
+)
+
+
