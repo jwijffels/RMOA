@@ -44,7 +44,8 @@ MOA_classifier <- function(model, control=NULL, ...){
 ##' @S3method print MOA_classifier
 print.MOA_classifier <- function(x, ...){
   print(x$options)
-  cat(x$moamodel$toString())  
+  try(cat(x$moamodel$toString()), silent=TRUE)
+  invisible()
 }
 
 #' MOA classification trees
@@ -66,10 +67,6 @@ print.MOA_classifier <- function(x, ...){
 #' hdt <- HoeffdingTree(numericEstimator = "GaussianNumericAttributeClassObserver")
 #' hdt
 NULL
-
-
-## TODO: FIMTDD, ORTO
-
 #' @export 
 #' @rdname MOA_classification_trees
 AdaHoeffdingOptionTree <- function(control=NULL, ...) {
@@ -110,17 +107,59 @@ LimAttHoeffdingTree <- function(control=NULL, ...) {
 RandomHoeffdingTree <- function(control=NULL, ...) {
   MOA_classifier(model = "RandomHoeffdingTree", control=control, ...)
 }
+
+
+#' MOA bayesian classification
+#'
+#' MOA bayesian classification
+#'
+#' @name MOA_classification_bayes
+#' @param control an object of class \code{MOAmodelOptions} as obtained by calling \code{\link{MOAoptions}}
+#' @param ... options of parameters passed on to \code{\link{MOAoptions}}, in case \code{control} is left to NULL. 
+#' Ignored if \code{control} is supplied
+#' @return An object of class \code{MOA_classifier} which sets up an untrained MOA model,
+#' which can be trained using \code{\link{trainMOA}} 
+#' @seealso \code{\link{MOAoptions}}, \code{\link{trainMOA}}
+#' @examples
+#' ctrl <- MOAoptions(model = "NaiveBayes")
+#' mymodel <- NaiveBayes(control=ctrl)
+#' mymodel
+NULL
 #' @export 
-#' @rdname MOA_classification_trees
+#' @rdname MOA_classification_bayes
 NaiveBayes <- function(control=NULL, ...) {
   MOA_classifier(model = "NaiveBayes", control=control, ...)
 }
 #' @export 
-#' @rdname MOA_classification_trees
+#' @rdname MOA_classification_bayes
 NaiveBayesMultinomial <- function(control=NULL, ...) {
   MOA_classifier(model = "NaiveBayesMultinomial", control=control, ...)
 }
 
+#' MOA active learning classification
+#'
+#' MOA active learning classification
+#'
+#' @name MOA_classification_activelearning
+#' @param control an object of class \code{MOAmodelOptions} as obtained by calling \code{\link{MOAoptions}}
+#' @param ... options of parameters passed on to \code{\link{MOAoptions}}, in case \code{control} is left to NULL. 
+#' Ignored if \code{control} is supplied
+#' @return An object of class \code{MOA_classifier} which sets up an untrained MOA model,
+#' which can be trained using \code{\link{trainMOA}} 
+#' @seealso \code{\link{MOAoptions}}, \code{\link{trainMOA}}
+#' @examples
+#' ctrl <- MOAoptions(model = "ActiveClassifier")
+#' mymodel <- ActiveClassifier(control=ctrl)
+#' mymodel
+NULL
+#' @export 
+#' @rdname MOA_classification_activelearning
+ActiveClassifier <- function(control=NULL, ...) {
+  MOA_classifier(model = "ActiveClassifier", control=control, ...)
+}
+
+
+## TODO: FIMTDD, ORTO
 
 #' Summary statistics of a MOA classifier 
 #'

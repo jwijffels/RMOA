@@ -1,0 +1,32 @@
+\name{MOA_classification_activelearning}
+\alias{ActiveClassifier}
+\alias{MOA_classification_activelearning}
+\title{MOA active learning classification}
+\usage{
+ActiveClassifier(control = NULL, ...)
+}
+\arguments{
+  \item{control}{an object of class \code{MOAmodelOptions}
+  as obtained by calling \code{\link{MOAoptions}}}
+
+  \item{...}{options of parameters passed on to
+  \code{\link{MOAoptions}}, in case \code{control} is left
+  to NULL. Ignored if \code{control} is supplied}
+}
+\value{
+An object of class \code{MOA_classifier} which sets up an
+untrained MOA model, which can be trained using
+\code{\link{trainMOA}}
+}
+\description{
+MOA active learning classification
+}
+\examples{
+ctrl <- MOAoptions(model = "ActiveClassifier")
+mymodel <- ActiveClassifier(control=ctrl)
+mymodel
+}
+\seealso{
+\code{\link{MOAoptions}}, \code{\link{trainMOA}}
+}
+

@@ -7,8 +7,6 @@
 \alias{HoeffdingTree}
 \alias{LimAttHoeffdingTree}
 \alias{MOA_classification_trees}
-\alias{NaiveBayes}
-\alias{NaiveBayesMultinomial}
 \alias{RandomHoeffdingTree}
 \title{MOA classification trees}
 \usage{
@@ -27,10 +25,6 @@ HoeffdingTree(control = NULL, ...)
 LimAttHoeffdingTree(control = NULL, ...)
 
 RandomHoeffdingTree(control = NULL, ...)
-
-NaiveBayes(control = NULL, ...)
-
-NaiveBayesMultinomial(control = NULL, ...)
 }
 \arguments{
   \item{control}{an object of class \code{MOAmodelOptions}
