@@ -56,6 +56,7 @@ To install the latest version from github
 ```
 library(devtools)
 install.packages("ff")
+install.packages("rJava")
 install_github("jwijffels/RMOA", subdir="RMOAjars/pkg")
 install_github("jwijffels/RMOA", subdir="RMOA/pkg")
 ```
