@@ -1,0 +1,45 @@
+\name{MOA_regressor}
+\alias{MOA_regressor}
+\title{Create a MOA regressor}
+\usage{
+MOA_regressor(model, control = NULL, ...)
+}
+\arguments{
+  \item{model}{character string with a model. E.g.
+  AMRulesRegressor, FadingTargetMean, FIMTDD, ORTO,
+  Perceptron, RandomRules, SGD, TargetMean, ... The list of
+  known models can be obtained by typing
+  RMOA:::.moaknownmodels. See the examples and
+  \code{\link{MOAoptions}}.}
+
+  \item{control}{an object of class \code{MOAmodelOptions}
+  as obtained by calling \code{\link{MOAoptions}}}
+
+  \item{...}{options of parameters passed on to
+  \code{\link{MOAoptions}}, in case \code{control} is left
+  to NULL. Ignored if \code{control} is supplied}
+}
+\value{
+An object of class \code{MOA_regressor}
+}
+\description{
+Create a MOA regressor
+}
+\examples{
+mymodel <- MOA_regressor(model = "Perceptron")
+mymodel
+data(iris)
+iris <- factorise(iris)
+irisdatastream <- datastream_dataframe(data=iris)
+## Train the model
+mytrainedmodel <- trainMOA(model = mymodel,
+ Sepal.Length ~ Petal.Length, data = irisdatastream)
+mytrainedmodel$model
+
+summary(lm(Sepal.Length ~ Petal.Length, data = iris))
+predict(mytrainedmodel, newdata=iris)
+}
+\seealso{
+\code{\link{MOAoptions}}
+}
+

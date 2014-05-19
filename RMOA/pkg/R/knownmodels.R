@@ -1,8 +1,14 @@
-.moaknownmodels <- c("AdaHoeffdingOptionTree", "ASHoeffdingTree", "DecisionStump", "HoeffdingAdaptiveTree", "HoeffdingOptionTree","HoeffdingTree", "LimAttHoeffdingTree", "RandomHoeffdingTree", 
-                     "NaiveBayes", "NaiveBayesMultinomial",
-                     "ActiveClassifier",
-                     "AccuracyUpdatedEnsemble","AccuracyWeightedEnsemble","ADACC","DACC","LeveragingBag","LimAttClassifier","OCBoost",
-                     "OnlineAccuracyUpdatedEnsemble","OzaBag","OzaBagAdwin","OzaBagASHT","OzaBoost","OzaBoostAdwin","TemporallyAugmentedClassifier","WeightedMajorityAlgorithm")
+.moaknownmodels <- c(
+  ## classification models
+  "AdaHoeffdingOptionTree", "ASHoeffdingTree", "DecisionStump", "HoeffdingAdaptiveTree", "HoeffdingOptionTree","HoeffdingTree", "LimAttHoeffdingTree", "RandomHoeffdingTree", 
+  "NaiveBayes", "NaiveBayesMultinomial",
+  "ActiveClassifier",
+  "AccuracyUpdatedEnsemble","AccuracyWeightedEnsemble","ADACC","DACC","LeveragingBag","LimAttClassifier","OCBoost",
+  "OnlineAccuracyUpdatedEnsemble","OzaBag","OzaBagAdwin","OzaBagASHT","OzaBoost","OzaBoostAdwin","TemporallyAugmentedClassifier","WeightedMajorityAlgorithm",
+  ## regression models
+  "AMRulesRegressor", "FadingTargetMean", "FIMTDD", "ORTO", "Perceptron", "SGD", "TargetMean")
+
+
 
 modelclass <- function(model){  
   if(!model %in% .moaknownmodels){
@@ -34,7 +40,15 @@ modelclass <- function(model){
                    "OzaBoost",
                    "OzaBoostAdwin",
                    "TemporallyAugmentedClassifier",
-                   "WeightedMajorityAlgorithm"),
+                   "WeightedMajorityAlgorithm",
+                   ## regression
+                   "AMRulesRegressor", 
+                   "FadingTargetMean", 
+                   "FIMTDD", 
+                   "ORTO", 
+                   "Perceptron", 
+                   "SGD", 
+                   "TargetMean"),
           to = c("moa/classifiers/trees/AdaHoeffdingOptionTree",
                  "moa/classifiers/trees/ASHoeffdingTree",
                  "moa/classifiers/trees/DecisionStump",
@@ -60,6 +74,14 @@ modelclass <- function(model){
                  "moa/classifiers/meta/OzaBoost",
                  "moa/classifiers/meta/OzaBoostAdwin",
                  "moa/classifiers/meta/TemporallyAugmentedClassifier",
-                 "moa/classifiers/meta/WeightedMajorityAlgorithm"))
+                 "moa/classifiers/meta/WeightedMajorityAlgorithm",
+                 ## regression
+                 "moa/classifiers/rules/AMRulesRegressor",
+                 "moa/classifiers/rules/functions/FadingTargetMean",
+                 "moa/classifiers/trees/FIMTDD",
+                 "moa/classifiers/trees/ORTO",
+                 "moa/classifiers/rules/functions/Perceptron",
+                 "moa/classifiers/functions/SGD",
+                 "moa/classifiers/rules/functions/TargetMean"))
 }
 

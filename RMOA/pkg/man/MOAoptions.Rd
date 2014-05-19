@@ -35,7 +35,7 @@ MOAoptions(model = "HoeffdingTree", leafprediction = "MC",
 
 ## Other models known by RMOA
 RMOA:::.moaknownmodels
-## Trees
+## Classification Trees
 MOAoptions(model = "AdaHoeffdingOptionTree")
 MOAoptions(model = "ASHoeffdingTree")
 MOAoptions(model = "DecisionStump")
@@ -44,12 +44,12 @@ MOAoptions(model = "HoeffdingOptionTree")
 MOAoptions(model = "HoeffdingTree")
 MOAoptions(model = "LimAttHoeffdingTree")
 MOAoptions(model = "RandomHoeffdingTree")
-## Bayes rule
+## Classification using Bayes rule
 MOAoptions(model = "NaiveBayes")
 MOAoptions(model = "NaiveBayesMultinomial")
-## Active learning
+## Classification using Active learning
 MOAoptions(model = "ActiveClassifier")
-## Ensemble learning
+## Classification using Ensemble learning
 MOAoptions(model = "AccuracyUpdatedEnsemble")
 MOAoptions(model = "AccuracyWeightedEnsemble")
 MOAoptions(model = "ADACC")
@@ -64,5 +64,14 @@ MOAoptions(model = "OzaBoost")
 MOAoptions(model = "OzaBoostAdwin")
 MOAoptions(model = "TemporallyAugmentedClassifier")
 MOAoptions(model = "WeightedMajorityAlgorithm")
+
+## Regressions
+MOAoptions(model = "AMRulesRegressor")
+MOAoptions(model = "FadingTargetMean")
+MOAoptions(model = "FIMTDD")
+MOAoptions(model = "ORTO")
+MOAoptions(model = "Perceptron")
+MOAoptions(model = "SGD")
+MOAoptions(model = "TargetMean")
 }
 
