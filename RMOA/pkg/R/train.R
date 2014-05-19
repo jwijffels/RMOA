@@ -175,27 +175,40 @@ predict.MOA_trainedmodel <- function(object, newdata, type="response", transFUN=
   
   object <- object$model
   columnnames <- fields(object)
-  newdata[[columnnames$response]] <- factor(NA, levels = columnnames$responselevels) ## Needs the response data to create DenseInstance but this is unknown
+  if(inherits(object, "MOA_classifier")){
+    newdata[[columnnames$response]] <- factor(NA, levels = columnnames$responselevels) ## Needs the response data to create DenseInstance but this is unknown  
+  }else if(inherits(object, "MOA_regressor")){
+    newdata[[columnnames$response]] <- as.numeric(NA) ## Needs the response data to create DenseInstance but this is unknown  
+  }
+  
   newdata <- as.train(newdata[, columnnames$attribute.names, drop = FALSE])
   
   atts <- MOAattributes(data=newdata)
   allinstances <- .jnew("weka.core.Instances", "data", atts$columnattributes, 0L)
   .jcall(allinstances, "V", "setClass", attribute(atts, columnnames$response)$attribute)
   
-  scores <- matrix(nrow = nrow(newdata), ncol = length(columnnames$responselevels))
+  if(inherits(object, "MOA_classifier")){
+    scores <- matrix(nrow = nrow(newdata), ncol = length(columnnames$responselevels))
+  }else if(inherits(object, "MOA_regressor")){
+    scores <- matrix(nrow = nrow(newdata), ncol = 1)
+  }  
   for(j in 1:nrow(newdata)){
     oneinstance <- .jnew("weka/core/DenseInstance", 1.0, .jarray(as.double(newdata[j, ])))  
     .jcall(oneinstance, "V", "setDataset", allinstances)
     oneinstance <- .jcast(oneinstance, "weka/core/Instance")
     scores[j, ] <- object$moamodel$getVotesForInstance(oneinstance)
   }
-  if(type == "votes"){
-    colnames(scores) <- columnnames$responselevels
-    return(scores)
-  }else if(type == "response"){
-    scores <- apply(scores, MARGIN=1, which.max) 
-    scores <- sapply(scores, FUN=function(x) columnnames$responselevels[x])
-    return(scores)
-  }    
+  if(inherits(object, "MOA_classifier")){
+    if(type == "votes"){
+      colnames(scores) <- columnnames$responselevels
+      return(scores)
+    }else if(type == "response"){
+      scores <- apply(scores, MARGIN=1, which.max) 
+      scores <- sapply(scores, FUN=function(x) columnnames$responselevels[x])
+      return(scores)
+    }  
+  }else if(inherits(object, "MOA_regressor")){
+    return(scores[, 1])
+  }      
 }
 
