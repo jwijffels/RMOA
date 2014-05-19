@@ -253,7 +253,6 @@ WeightedMajorityAlgorithm <- function(control=NULL, ...) {
 
 
 
-## TODO: FIMTDD, ORTO, RandomRules, WEKAClassifier
 
 #' Summary statistics of a MOA classifier 
 #'
