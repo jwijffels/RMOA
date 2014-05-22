@@ -51,7 +51,9 @@
 #'  Species ~ Sepal.Length + Sepal.Width + Petal.Length + Petal.Length^2, 
 #'  data = irisdatastream, chunksize = 10, reset=TRUE, trace=TRUE)
 #' mymodel$model
-trainMOA <- function(model, formula, data, subset, na.action=na.exclude, transFUN=identity, chunksize=1000, reset=TRUE, trace=FALSE, options){
+trainMOA <- function(model, formula, data, subset, na.action=na.exclude, transFUN=identity, chunksize=1000, reset=TRUE, 
+                     trace=FALSE, options = list(maxruntime = +Inf)){
+  startat <- Sys.time()
   mc <- match.call()
   mf <- mc[c(1L, match(c("formula", "data", "subset", "na.action"), names(mc), 0L))]
   mf[[1L]] <- as.name("model.frame")
@@ -105,6 +107,12 @@ trainMOA <- function(model, formula, data, subset, na.action=na.exclude, transFU
     ### Learn the model
     model <- trainchunk(model = model, traindata = traindata, allinstances = ct$allinstances)  
     i <- i + 1
+    
+    if("maxruntime" %in% names(options)){
+      if(difftime(Sys.time(), startat, units = "secs") > options$maxruntime){
+        break
+      }
+    }
   }
   if(is.null(terms)){
     terms <- terms(formula)
