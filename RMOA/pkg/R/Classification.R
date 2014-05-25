@@ -292,6 +292,5 @@ print.summary_MOA_classifier <- function(x, ...){
   cat(sprintf("responselevels: %s", paste(x$fields$responselevels, collapse=", ")), sep="\n")
   cat(sprintf("data features: %s", paste(x$fields$attribute.names, collapse=", ")), sep="\n")
   cat(sprintf("Model has trained: %s", x$trainingHasStarted), sep="\n")
-  #print.MOAmodelOptions(x$options) 
 }
 
