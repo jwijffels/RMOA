@@ -50,9 +50,9 @@ Classification models which are possible through RMOA are:
       
 Installation
 -----------
-The package is currently not available at CRAN.
+The package is currently available at CRAN.
 
-To install the latest version from github
+To install the latest development version from github
 ```
 library(devtools)
 install.packages("ff")
