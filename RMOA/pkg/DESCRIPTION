@@ -1,12 +1,11 @@
 Package: RMOA
 Version: 1.0
-Title: Connect R with MOA (Massive Online Analysis) for streaming
-    classifications and regressions
+Title: Connect R with MOA for Massive Online Analysis
 Authors@R: c(person("Jan", "Wijffels", role = c("aut", "cre"), email =
-    "jwijffels@bnosac.be"))
+    "jwijffels@bnosac.be"), person("BNOSAC", role = "cph"))
 Description: Connect R with MOA (Massive Online Analysis -
     http://moa.cms.waikato.ac.nz) to build classification models and
-    regression models on streaming data or out-of-RAM data.
+    regression models on streaming data or out-of-RAM data
 Depends:
     RMOAjars (>= 1.0),
     rJava (>= 0.6-3),
@@ -15,7 +14,7 @@ Suggests:
     ff
 SystemRequirements: Java (>= 5.0)
 License: GPL-3
-Copyright: Code is Copyright (C) BNOSAC.
+Copyright: Code is Copyright (C) Jan Wijffels and BNOSAC
 Maintainer: Jan Wijffels <jwijffels@bnosac.be>
 URL: http://www.bnosac.be, https://github.com/jwijffels/RMOA,
     http://moa.cms.waikato.ac.nz/
