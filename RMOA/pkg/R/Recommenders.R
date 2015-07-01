@@ -73,3 +73,61 @@ BRISMFPredictor <- function(control=NULL, ...) {
 BaselinePredictor <- function(control=NULL, ...) {
   MOA_recommender(model = "BaselinePredictor", control=control, ...)
 }
+
+
+
+
+#' Summary statistics of a MOA recommender 
+#'
+#' Summary statistics of a MOA recommender 
+#'
+#' @param object an object of class  \code{MOA_recommender}
+#' @param ... other arguments, currently not used yet
+#' @return the form of the return value depends on the type of MOA model
+#' @export 
+#' @S3method summary MOA_recommender
+#' @examples
+#' require(recommenderlab)
+#' data(MovieLense)
+#' x <- getData.frame(MovieLense)
+#' x$itemid <- as.integer(as.factor(x$item))
+#' x$userid <- as.integer(as.factor(x$user))
+#' x$rating <- as.numeric(x$rating)
+#' x <- head(x, 2000)
+#' 
+#' movielensestream <- datastream_dataframe(data=x)
+#' movielensestream$get_points(3)
+#' 
+#' ctrl <- MOAoptions(model = "BRISMFPredictor", features = 10)
+#' brism <- BRISMFPredictor(control=ctrl)
+#' mymodel <- trainMOA(model = brism, rating ~ userid + itemid, 
+#'  data = movielensestream, chunksize = 1000, trace=TRUE)
+#' 
+#' overview <- summary(mymodel$model)
+#' str(overview)
+summary.MOA_recommender <- function(object, ...){
+  out <- list()
+  out$type <- object$type
+  out$options <- object$options$options
+  try(x <- object$moamodel$getData(), silent=TRUE)
+  if(!inherits(x, "try-error")){
+    out$nr.users <- x$getNumUsers()
+    out$nr.items <- x$getNumItems()
+    out$nr.rating <- x$getNumRatings()
+    out$rating.range <- c(x$getMinRating(), x$getMaxRating())
+    out$rating.globalmean <- x$getGlobalMean() 
+    out$users <- x$getItems()$toArray()
+    out$users <- sapply(out$users, FUN=function(item) .jcall(item, returnSig="I", method = "intValue", check=FALSE, use.true.class = FALSE))
+    out$items <- x$getUsers()$toArray()
+    out$items <- sapply(out$items, FUN=function(item) .jcall(item, returnSig="I", method = "intValue", check=FALSE, use.true.class = FALSE))
+  }
+  class(out) <- "summary_MOA_recommender"
+  out
+}
+
+##' @S3method print summary_MOA_recommender
+print.summary_MOA_recommender <- function(x, ...){
+  cat(x$type, sep="\n")  
+  cat(sprintf("number of users: %s, items: %s, ratings: %s", x$nr.users, x$nr.items, x$nr.rating), sep="\n")
+  cat(sprintf("ratings min: %s, max: %s, mean: %s", x$rating.range[1], x$rating.range[2], x$rating.globalmean), sep="\n")
+}

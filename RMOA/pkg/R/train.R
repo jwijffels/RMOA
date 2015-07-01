@@ -277,6 +277,123 @@ trainMOA.MOA_regressor <- function(model, formula, data, subset, na.action=na.ex
 }
 
 
+
+#' Train a MOA recommender (e.g. a BRISMFPredictor) on a datastream
+#'
+#' Train a MOA recommender (e.g. a BRISMFPredictor) on a datastream
+#'
+#' @param model an object of class \code{MOA_model}, as returned by \code{\link{MOA_recommender}}, e.g.
+#' a \code{\link{BRISMFPredictor}}
+#' @param formula a symbolic description of the model to be fit. This should be of the form rating ~ userid + itemid, in that sequence.
+#' These should be columns in the \code{data}, where userid and itemid are integers and rating is numeric.
+#' @param data an object of class \code{\link{datastream}} set up e.g. with \code{\link{datastream_file}}, 
+#' \code{\link{datastream_dataframe}}, \code{\link{datastream_matrix}}, \code{\link{datastream_ffdf}} or your own datastream.
+#' @param subset an optional vector specifying a subset of observations to be used in the fitting process.
+#' @param na.action a function which indicates what should happen when the data contain \code{NA}s. 
+#' See \code{\link{model.frame}} for details. Defaults to \code{\link{na.exclude}}.
+#' @param transFUN a function which is used after obtaining \code{chunksize} number of rows 
+#' from the \code{data} datastream before applying \code{\link{model.frame}}. Useful if you want to 
+#' change the results \code{get_points} on the datastream 
+#' (e.g. for making sure the factor levels are the same in each chunk of processing, some data cleaning, ...). 
+#' Defaults to \code{\link{identity}}.
+#' @param chunksize the number of rows to obtain from the \code{data} datastream in one chunk of model processing.
+#' Defaults to 1000. Can be used to speed up things according to the backbone architecture of
+#' the datastream.
+#' @param trace logical, indicating to show information on how many datastream chunks are already processed
+#' as a \code{message}.
+#' @param options a names list of further options. Currently not used.
+#' @return An object of class MOA_trainedmodel which is a list with elements
+#' \itemize{
+#' \item{model: the updated supplied \code{model} object of class \code{MOA_recommender}}
+#' \item{call: the matched call}
+#' \item{na.action: the vatlue of na.action}
+#' \item{terms: the \code{terms} in the model}
+#' \item{transFUN: the transFUN argument}
+#' }
+#' @seealso \code{\link{MOA_recommender}}, \code{\link{datastream_file}}, \code{\link{datastream_dataframe}}, 
+#' \code{\link{datastream_matrix}}, \code{\link{datastream_ffdf}}, \code{\link{datastream}},
+#' \code{\link{predict.MOA_trainedmodel}}
+#' @export 
+#' @examples
+#' require(recommenderlab)
+#' data(MovieLense)
+#' x <- getData.frame(MovieLense)
+#' x$itemid <- as.integer(as.factor(x$item))
+#' x$userid <- as.integer(as.factor(x$user))
+#' x$rating <- as.numeric(x$rating)
+#' x <- head(x, 5000)
+#' 
+#' movielensestream <- datastream_dataframe(data=x)
+#' movielensestream$get_points(3)
+#' 
+#' ctrl <- MOAoptions(model = "BRISMFPredictor", features = 10)
+#' brism <- BRISMFPredictor(control=ctrl)
+#' mymodel <- trainMOA(model = brism, rating ~ userid + itemid, 
+#'  data = movielensestream, chunksize = 1000, trace=TRUE)
+#' summary(mymodel$model)
+trainMOA.MOA_recommender <- function(model, formula, data, subset, na.action=na.exclude, transFUN=identity, chunksize=1000, 
+                                    trace=FALSE, options = list(maxruntime = +Inf)){
+  startat <- Sys.time()
+  mc <- match.call()
+  mf <- mc[c(1L, match(c("formula", "data", "subset", "na.action"), names(mc), 0L))]
+  mf[[1L]] <- as.name("model.frame")
+  mf[[3L]] <- as.name("datachunk")
+  mf$drop.unused.levels <- FALSE
+  setratings <- function(modeldata, traindata){
+    stopifnot(is.numeric(traindata[, 1]))
+    stopifnot(is.integer(traindata[, 2]))
+    stopifnot(is.integer(traindata[, 3]))
+    
+    setRating <- function(object, user, item, value){
+      invisible(sapply(seq_along(user), FUN=function(i){
+        .jcall(object, "V", "setRating", user[i], item[i], value[i])    
+      }))
+      invisible(object)
+    }
+    setRating(object = modeldata, user = traindata[, 2], item = traindata[, 3], value = traindata[, 1])
+  }  
+  .jcall(model$moamodel, "V", "prepareForUse")
+  terms <- NULL
+  i <- 1
+  mdata <- model$moamodel$getData()
+  while(!data$isfinished()){
+    if(trace){
+      message(sprintf("%s Running chunk %s: instances %s:%s", Sys.time(), i, (i*chunksize)-chunksize, i*chunksize))
+    }
+    ### Get data of chunk and extract the model.frame
+    datachunk <- data$get_points(chunksize)
+    if(is.null(datachunk)){
+      break
+    }
+    datachunk <- transFUN(datachunk)  
+    traindata <- eval(mf)      
+    if(i == 1){
+      terms <- terms(traindata)      
+    }
+    ### Learn the model
+    setratings(modeldata = mdata, traindata = traindata)  
+    i <- i + 1
+    
+    if("maxruntime" %in% names(options)){
+      if(difftime(Sys.time(), startat, units = "secs") > options$maxruntime){
+        break
+      }
+    }
+  }
+  if(is.null(terms)){
+    terms <- terms(formula)
+  }
+  out <- list()
+  out$model <- model
+  out$call <- mc
+  out$na.action <- attr(mf, "na.action")
+  out$terms <- terms
+  out$transFUN <- transFUN
+  class(out) <- "MOA_trainedmodel"
+  out
+} 
+
+
 #' Predict using a MOA classifier on a new dataset
 #'
 #' Predict using a MOA classifier on a new dataset. Make sure the new dataset has the same structure

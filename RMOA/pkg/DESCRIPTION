@@ -11,7 +11,8 @@ Depends:
     rJava (>= 0.6-3),
     methods
 Suggests:
-    ff
+    ff,
+    recommenderlab
 SystemRequirements: Java (>= 5.0)
 License: GPL-3
 Copyright: Code is Copyright (C) Jan Wijffels and BNOSAC
