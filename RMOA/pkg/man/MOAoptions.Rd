@@ -74,5 +74,9 @@ MOAoptions(model = "ORTO")
 MOAoptions(model = "Perceptron")
 MOAoptions(model = "SGD")
 MOAoptions(model = "TargetMean")
+
+## Recommendation engines
+MOAoptions(model = "BRISMFPredictor")
+MOAoptions(model = "BaselinePredictor")
 }
 

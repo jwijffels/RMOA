@@ -2,12 +2,24 @@
 \name{MOA_regressors}
 \alias{AMRulesRegressor}
 \alias{FIMTDD}
+\alias{FadingTargetMean}
 \alias{MOA_regressors}
+\alias{ORTO}
+\alias{Perceptron}
+\alias{TargetMean}
 \title{MOA regressors}
 \usage{
-FIMTDD(control = NULL, ...)
+TargetMean(control = NULL, ...)
+
+FadingTargetMean(control = NULL, ...)
+
+Perceptron(control = NULL, ...)
 
 AMRulesRegressor(control = NULL, ...)
+
+FIMTDD(control = NULL, ...)
+
+ORTO(control = NULL, ...)
 }
 \arguments{
 \item{control}{an object of class \code{MOAmodelOptions} as obtained by calling \code{\link{MOAoptions}}}

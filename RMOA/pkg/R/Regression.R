@@ -73,14 +73,35 @@ print.MOA_regressor <- function(x, ...){
 NULL
 #' @export 
 #' @rdname MOA_regressors
-FIMTDD <- function(control=NULL, ...) {
-  MOA_regressor(model = "FIMTDD", control=control, ...)
+TargetMean <- function(control=NULL, ...) {
+  MOA_regressor(model = "TargetMean", control=control, ...)
+}
+#' @export 
+#' @rdname MOA_regressors
+FadingTargetMean <- function(control=NULL, ...) {
+  MOA_regressor(model = "FadingTargetMean", control=control, ...)
+}
+#' @export 
+#' @rdname MOA_regressors
+Perceptron <- function(control=NULL, ...) {
+  MOA_regressor(model = "Perceptron", control=control, ...)
 }
 #' @export 
 #' @rdname MOA_regressors
 AMRulesRegressor <- function(control=NULL, ...) {
   MOA_regressor(model = "AMRulesRegressor", control=control, ...)
 }
+#' @export 
+#' @rdname MOA_regressors
+FIMTDD <- function(control=NULL, ...) {
+  MOA_regressor(model = "FIMTDD", control=control, ...)
+}
+#' @export 
+#' @rdname MOA_regressors
+ORTO <- function(control=NULL, ...) {
+  MOA_regressor(model = "ORTO", control=control, ...)
+}
+
 
 #' Summary statistics of a MOA regressor 
 #'

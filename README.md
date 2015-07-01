@@ -49,10 +49,17 @@ Classification models which are possible through RMOA are:
       
 Streaming regression models are also included namely
 
-  * FIMTDD
+- Rules: 
+  * TargetMean and FadingTargetMean
+  * Perceptron
   * AMRulesRegressor
+- Trees: 
+  * FIMTDD
+  * ORTO
+- Functions
+  * SGD (Stochastic gradient descent)
   
-Streaming recommendation engines are available namely
+Streaming recommendation engines which are made available are
 
   * BaselinePredictor
   * BRISMFPredictor

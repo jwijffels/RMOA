@@ -64,6 +64,10 @@
 #' MOAoptions(model = "Perceptron")
 #' MOAoptions(model = "SGD")
 #' MOAoptions(model = "TargetMean")
+#' 
+#' ## Recommendation engines
+#' MOAoptions(model = "BRISMFPredictor")
+#' MOAoptions(model = "BaselinePredictor")
 MOAoptions <- function(model, ...){
   if(inherits(model, "character")){
     moamodel <- .jnew(modelclass(model))  
@@ -116,7 +120,7 @@ setMOAoptions <- function(x, ...){
     optionname <- .jcall(alloptions[[i]], "S", "getName")
     if(optionname %in% names(params)){
       value <- params[[optionname]]
-      if(isTRUE(value)){
+      if(identical(TRUE, value) || identical(FALSE, value)){
         value <- tolower(as.character(value))
       }
       .jcall(alloptions[[i]], "V", "setValueViaCLIString", as.character(value))    
@@ -124,7 +128,7 @@ setMOAoptions <- function(x, ...){
     }    
   }
   if(sum(!done) > 0){
-    warning(sprintf("Following MOA options do not exist and are hence not changed: %s", paste(names(done)[done == FALSE], collapse=", ")))
+    warning(sprintf("Following MOA options do not exist according to the MOA docs and might not be changed: %s", paste(names(done)[done == FALSE], collapse=", ")))
   }
   invisible(done)
 }
