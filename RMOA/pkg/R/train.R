@@ -142,7 +142,7 @@ trainMOA.MOA_classifier <- function(model, formula, data, subset, na.action=na.e
   out$na.action <- attr(mf, "na.action")
   out$terms <- terms
   out$transFUN <- transFUN
-  class(out) <- "MOA_trainedmodel"
+  class(out) <- c("MOA_trainedmodel", "MOA_classifier")
   out
 } 
 
@@ -274,7 +274,7 @@ trainMOA.MOA_regressor <- function(model, formula, data, subset, na.action=na.ex
   out$na.action <- attr(mf, "na.action")
   out$terms <- terms
   out$transFUN <- transFUN
-  class(out) <- "MOA_trainedmodel"
+  class(out) <- c("MOA_trainedmodel", "MOA_regressor")
   out
 }
 
@@ -392,18 +392,21 @@ trainMOA.MOA_recommender <- function(model, formula, data, subset, na.action=na.
   out$na.action <- attr(mf, "na.action")
   out$terms <- terms
   out$transFUN <- transFUN
-  class(out) <- "MOA_trainedmodel"
+  class(out) <- c("MOA_trainedmodel", "MOA_recommender")
   out
 } 
 
 
-#' Predict using a MOA classifier on a new dataset
+#' Predict using a MOA classifier, MOA regressor or MOA recommender on a new dataset
 #'
-#' Predict using a MOA classifier on a new dataset. Make sure the new dataset has the same structure
+#' Predict using a MOA classifier, MOA regressor or MOA recommender on a new dataset. \\
+#' Make sure the new dataset has the same structure
 #' and the same levels as \code{get_points} returns on the datastream which was used in \code{trainMOA}
 #'
 #' @param object an object of class \code{MOA_trainedmodel}, as returned by \code{\link{trainMOA}}
-#' @param newdata a data.frame with the same structure and the same levels as used in \code{trainMOA}
+#' @param newdata a data.frame with the same structure and the same levels as used in \code{trainMOA} for MOA classifier, MOA regressor,
+#' a data.frame with at least the user/item columns which were used in \code{\link{trainMOA}} when training
+#' the MOA recommendation engine
 #' @param type a character string, either 'response' or 'votes'
 #' @param transFUN a function which is used on \code{newdata} 
 #' before applying \code{\link{model.frame}}. 
@@ -411,7 +414,8 @@ trainMOA.MOA_recommender <- function(model, formula, data, subset, na.action=na.
 #' (e.g. for making sure the factor levels are the same in each chunk of processing, some data cleaning, ...). 
 #' Defaults to \code{transFUN} available in \code{object}.
 #' @param ... other arguments, currently not used yet
-#' @return A matrix of votes or a vector with the predicted class 
+#' @return A matrix of votes or a vector with the predicted class for MOA classifier or MOA regressor.
+#' A 
 #' @export 
 #' @S3method predict MOA_trainedmodel
 #' @seealso \code{\link{trainMOA}}
@@ -439,53 +443,88 @@ trainMOA.MOA_recommender <- function(model, formula, data, subset, na.action=na.
 #' table(scores, traintest$testset$Species)
 #' scores <- predict(hdtreetrained, newdata=traintest$testset, type="votes")
 #' head(scores)
-predict.MOA_trainedmodel <- function(object, newdata, type="response", transFUN=object$transFUN, ...){  
-  modelready <- TRUE
-  try(modelready <- .jcall(object$model$moamodel, "Z", "trainingHasStarted"), silent=TRUE)
-  if(!modelready){
-    stop("Model is not trained yet")
-  }
-  ## Apply transFUN and model.frame
-  newdata <- transFUN(newdata)
-  Terms <- delete.response(object$terms)
-  newdata <- model.frame(Terms, newdata)
-  
-  object <- object$model
-  columnnames <- fields(object)
-  if(inherits(object, "MOA_classifier")){
-    newdata[[columnnames$response]] <- factor(NA, levels = columnnames$responselevels) ## Needs the response data to create DenseInstance but this is unknown  
-  }else if(inherits(object, "MOA_regressor")){
-    newdata[[columnnames$response]] <- as.numeric(NA) ## Needs the response data to create DenseInstance but this is unknown  
-  }
-  
-  newdata <- as.train(newdata[, columnnames$attribute.names, drop = FALSE])
-  
-  atts <- MOAattributes(data=newdata)
-  allinstances <- .jnew("weka.core.Instances", "data", atts$columnattributes, 0L)
-  .jcall(allinstances, "V", "setClass", attribute(atts, columnnames$response)$attribute)
-  
-  if(inherits(object, "MOA_classifier")){
-    scores <- matrix(nrow = nrow(newdata), ncol = length(columnnames$responselevels))
-  }else if(inherits(object, "MOA_regressor")){
-    scores <- matrix(nrow = nrow(newdata), ncol = 1)
-  }  
-  for(j in 1:nrow(newdata)){
-    oneinstance <- .jnew("weka/core/DenseInstance", 1.0, .jarray(as.double(newdata[j, ])))  
-    .jcall(oneinstance, "V", "setDataset", allinstances)
-    oneinstance <- .jcast(oneinstance, "weka/core/Instance")
-    scores[j, ] <- object$moamodel$getVotesForInstance(oneinstance)
-  }
-  if(inherits(object, "MOA_classifier")){
-    if(type == "votes"){
-      colnames(scores) <- columnnames$responselevels
-      return(scores)
-    }else if(type == "response"){
-      scores <- apply(scores, MARGIN=1, which.max) 
-      scores <- sapply(scores, FUN=function(x) columnnames$responselevels[x])
-      return(scores)
+#' 
+#' ## Prediction based on recommendation engine
+#' require(recommenderlab)
+#' data(MovieLense)
+#' x <- getData.frame(MovieLense)
+#' x$itemid <- as.integer(as.factor(x$item))
+#' x$userid <- as.integer(as.factor(x$user))
+#' x$rating <- as.numeric(x$rating)
+#' x <- head(x, 2000)
+#' 
+#' movielensestream <- datastream_dataframe(data=x)
+#' movielensestream$get_points(3)
+#' 
+#' ctrl <- MOAoptions(model = "BRISMFPredictor", features = 10)
+#' brism <- BRISMFPredictor(control=ctrl)
+#' mymodel <- trainMOA(model = brism, rating ~ userid + itemid, 
+#'  data = movielensestream, chunksize = 1000, trace=TRUE)
+#' 
+#' overview <- summary(mymodel$model)
+#' str(overview)
+#' predict(mymodel, head(x, 10), type = "response")
+#' 
+#' x <- expand.grid(userid=overview$users[1:10], itemid=overview$items)
+#' predict(mymodel, x, type = "response")
+predict.MOA_trainedmodel <- function(object, newdata, type="response", transFUN=object$transFUN, ...){ 
+  if(inherits(object, "MOA_recommender")){
+    ## Apply transFUN and model.frame
+    newdata <- transFUN(newdata)
+    Terms <- delete.response(object$terms)
+    newdata <- model.frame(Terms, newdata)
+    newdata$rating <- apply(newdata, MARGIN=1, FUN=function(x){
+      .jcall(object$model$moamodel, returnSig = "D", "predictRating", x[1], x[2])
+    })
+    return(newdata)
+  }else{
+    modelready <- TRUE
+    try(modelready <- .jcall(object$model$moamodel, "Z", "trainingHasStarted"), silent=TRUE)
+    if(!modelready){
+      stop("Model is not trained yet")
+    }
+    ## Apply transFUN and model.frame
+    newdata <- transFUN(newdata)
+    Terms <- delete.response(object$terms)
+    newdata <- model.frame(Terms, newdata)
+    
+    object <- object$model
+    columnnames <- fields(object)
+    if(inherits(object, "MOA_classifier")){
+      newdata[[columnnames$response]] <- factor(NA, levels = columnnames$responselevels) ## Needs the response data to create DenseInstance but this is unknown  
+    }else if(inherits(object, "MOA_regressor")){
+      newdata[[columnnames$response]] <- as.numeric(NA) ## Needs the response data to create DenseInstance but this is unknown  
+    }
+    
+    newdata <- as.train(newdata[, columnnames$attribute.names, drop = FALSE])
+    
+    atts <- MOAattributes(data=newdata)
+    allinstances <- .jnew("weka.core.Instances", "data", atts$columnattributes, 0L)
+    .jcall(allinstances, "V", "setClass", attribute(atts, columnnames$response)$attribute)
+    
+    if(inherits(object, "MOA_classifier")){
+      scores <- matrix(nrow = nrow(newdata), ncol = length(columnnames$responselevels))
+    }else if(inherits(object, "MOA_regressor")){
+      scores <- matrix(nrow = nrow(newdata), ncol = 1)
     }  
-  }else if(inherits(object, "MOA_regressor")){
-    return(scores[, 1])
-  }      
+    for(j in 1:nrow(newdata)){
+      oneinstance <- .jnew("weka/core/DenseInstance", 1.0, .jarray(as.double(newdata[j, ])))  
+      .jcall(oneinstance, "V", "setDataset", allinstances)
+      oneinstance <- .jcast(oneinstance, "weka/core/Instance")
+      scores[j, ] <- object$moamodel$getVotesForInstance(oneinstance)
+    }
+    if(inherits(object, "MOA_classifier")){
+      if(type == "votes"){
+        colnames(scores) <- columnnames$responselevels
+        return(scores)
+      }else if(type == "response"){
+        scores <- apply(scores, MARGIN=1, which.max) 
+        scores <- sapply(scores, FUN=function(x) columnnames$responselevels[x])
+        return(scores)
+      }  
+    }else if(inherits(object, "MOA_regressor")){
+      return(scores[, 1])
+    }  
+  }   
 }
 

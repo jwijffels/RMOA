@@ -105,11 +105,12 @@ BaselinePredictor <- function(control=NULL, ...) {
 #' 
 #' overview <- summary(mymodel$model)
 #' str(overview)
+#' predict(mymodel, head(x, 10), type = "response")
 summary.MOA_recommender <- function(object, ...){
   out <- list()
   out$type <- object$type
   out$options <- object$options$options
-  try(x <- object$moamodel$getData(), silent=TRUE)
+  x <- try(object$moamodel$getData(), silent=TRUE)
   if(!inherits(x, "try-error")){
     out$nr.users <- x$getNumUsers()
     out$nr.items <- x$getNumItems()

@@ -35,5 +35,6 @@ mymodel <- trainMOA(model = brism, rating ~ userid + itemid,
 
 overview <- summary(mymodel$model)
 str(overview)
+predict(mymodel, head(x, 10), type = "response")
 }
 
