@@ -41,6 +41,7 @@ trainMOA <- function(model, ...){
 #' @param trace logical, indicating to show information on how many datastream chunks are already processed
 #' as a \code{message}.
 #' @param options a names list of further options. Currently not used.
+#' @param ... other arguments, currently not used yet
 #' @return An object of class MOA_trainedmodel which is a list with elements
 #' \itemize{
 #' \item{model: the updated supplied \code{model} object of class \code{MOA_classifier}}
@@ -70,7 +71,7 @@ trainMOA <- function(model, ...){
 #'  data = irisdatastream, chunksize = 10, reset=TRUE, trace=TRUE)
 #' mymodel$model
 trainMOA.MOA_classifier <- function(model, formula, data, subset, na.action=na.exclude, transFUN=identity, chunksize=1000, reset=TRUE, 
-                     trace=FALSE, options = list(maxruntime = +Inf)){
+                     trace=FALSE, options = list(maxruntime = +Inf), ...){
   startat <- Sys.time()
   mc <- match.call()
   mf <- mc[c(1L, match(c("formula", "data", "subset", "na.action"), names(mc), 0L))]
@@ -172,6 +173,7 @@ trainMOA.MOA_classifier <- function(model, formula, data, subset, na.action=na.e
 #' @param trace logical, indicating to show information on how many datastream chunks are already processed
 #' as a \code{message}.
 #' @param options a names list of further options. Currently not used.
+#' @param ... other arguments, currently not used yet
 #' @return An object of class MOA_trainedmodel which is a list with elements
 #' \itemize{
 #' \item{model: the updated supplied \code{model} object of class \code{MOA_regressor}}
@@ -201,7 +203,7 @@ trainMOA.MOA_classifier <- function(model, formula, data, subset, na.action=na.e
 #'  chunksize = 10, reset=FALSE, trace=TRUE)
 #' mytrainedmodel$model 
 trainMOA.MOA_regressor <- function(model, formula, data, subset, na.action=na.exclude, transFUN=identity, chunksize=1000, reset=TRUE, 
-                                   trace=FALSE, options = list(maxruntime = +Inf)){
+                                   trace=FALSE, options = list(maxruntime = +Inf), ...){
   startat <- Sys.time()
   mc <- match.call()
   mf <- mc[c(1L, match(c("formula", "data", "subset", "na.action"), names(mc), 0L))]
@@ -302,6 +304,7 @@ trainMOA.MOA_regressor <- function(model, formula, data, subset, na.action=na.ex
 #' @param trace logical, indicating to show information on how many datastream chunks are already processed
 #' as a \code{message}.
 #' @param options a names list of further options. Currently not used.
+#' @param ... other arguments, currently not used yet
 #' @return An object of class MOA_trainedmodel which is a list with elements
 #' \itemize{
 #' \item{model: the updated supplied \code{model} object of class \code{MOA_recommender}}
@@ -332,7 +335,7 @@ trainMOA.MOA_regressor <- function(model, formula, data, subset, na.action=na.ex
 #'  data = movielensestream, chunksize = 1000, trace=TRUE)
 #' summary(mymodel$model)
 trainMOA.MOA_recommender <- function(model, formula, data, subset, na.action=na.exclude, transFUN=identity, chunksize=1000, 
-                                    trace=FALSE, options = list(maxruntime = +Inf)){
+                                    trace=FALSE, options = list(maxruntime = +Inf), ...){
   startat <- Sys.time()
   mc <- match.call()
   mf <- mc[c(1L, match(c("formula", "data", "subset", "na.action"), names(mc), 0L))]

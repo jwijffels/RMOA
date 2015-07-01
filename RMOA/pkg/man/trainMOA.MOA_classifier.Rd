@@ -5,7 +5,7 @@
 \usage{
 \method{trainMOA}{MOA_classifier}(model, formula, data, subset,
   na.action = na.exclude, transFUN = identity, chunksize = 1000,
-  reset = TRUE, trace = FALSE, options = list(maxruntime = +Inf))
+  reset = TRUE, trace = FALSE, options = list(maxruntime = +Inf), ...)
 }
 \arguments{
 \item{model}{an object of class \code{MOA_model}, as returned by \code{\link{MOA_classifier}}, e.g.
@@ -38,6 +38,8 @@ already has learned. Defaults to TRUE.}
 as a \code{message}.}
 
 \item{options}{a names list of further options. Currently not used.}
+
+\item{...}{other arguments, currently not used yet}
 }
 \value{
 An object of class MOA_trainedmodel which is a list with elements
