@@ -1,3 +1,21 @@
+
+
+#' Train a MOA classifier/regressor/recommendation engine on a datastream
+#'
+#' Train a MOA classifier/regressor/recommendation engine on a datastream
+#'
+#' @param model an object of class \code{MOA_model}, as returned by \code{\link{MOA_classifier}}, 
+#' \code{\link{MOA_regressor}}, \code{\link{MOA_recommender}}
+#' @param ... other parameters passed on to the methods
+#' @return An object of class MOA_trainedmodel which is returned by the methods for the specific model.  
+#' See \code{\link{trainMOA.MOA_classifier}}, \code{\link{trainMOA.MOA_regressor}}, \code{\link{trainMOA.MOA_recommender}}
+#' @seealso \code{\link{trainMOA.MOA_classifier}}, \code{\link{trainMOA.MOA_regressor}}, \code{\link{trainMOA.MOA_recommender}}
+#' @export 
+trainMOA <- function(model, ...){
+  UseMethod("trainMOA")
+} 
+
+
 #' Train a MOA classifier (e.g. a HoeffdingTree) on a datastream
 #'
 #' Train a MOA classifier (e.g. a HoeffdingTree) on a datastream
@@ -51,7 +69,7 @@
 #'  Species ~ Sepal.Length + Sepal.Width + Petal.Length + Petal.Length^2, 
 #'  data = irisdatastream, chunksize = 10, reset=TRUE, trace=TRUE)
 #' mymodel$model
-trainMOA <- function(model, formula, data, subset, na.action=na.exclude, transFUN=identity, chunksize=1000, reset=TRUE, 
+trainMOA.MOA_classifier <- function(model, formula, data, subset, na.action=na.exclude, transFUN=identity, chunksize=1000, reset=TRUE, 
                      trace=FALSE, options = list(maxruntime = +Inf)){
   startat <- Sys.time()
   mc <- match.call()
@@ -126,6 +144,137 @@ trainMOA <- function(model, formula, data, subset, na.action=na.exclude, transFU
   class(out) <- "MOA_trainedmodel"
   out
 } 
+
+
+
+#' Train a MOA regressor (e.g. a FIMTDD) on a datastream
+#'
+#' Train a MOA regressor (e.g. a FIMTDD) on a datastream
+#'
+#' @param model an object of class \code{MOA_model}, as returned by \code{\link{MOA_regressor}}, e.g.
+#' a \code{\link{FIMTDD}}
+#' @param formula a symbolic description of the model to be fit.
+#' @param data an object of class \code{\link{datastream}} set up e.g. with \code{\link{datastream_file}}, 
+#' \code{\link{datastream_dataframe}}, \code{\link{datastream_matrix}}, \code{\link{datastream_ffdf}} or your own datastream.
+#' @param subset an optional vector specifying a subset of observations to be used in the fitting process.
+#' @param na.action a function which indicates what should happen when the data contain \code{NA}s. 
+#' See \code{\link{model.frame}} for details. Defaults to \code{\link{na.exclude}}.
+#' @param transFUN a function which is used after obtaining \code{chunksize} number of rows 
+#' from the \code{data} datastream before applying \code{\link{model.frame}}. Useful if you want to 
+#' change the results \code{get_points} on the datastream 
+#' (e.g. for making sure the factor levels are the same in each chunk of processing, some data cleaning, ...). 
+#' Defaults to \code{\link{identity}}.
+#' @param chunksize the number of rows to obtain from the \code{data} datastream in one chunk of model processing.
+#' Defaults to 1000. Can be used to speed up things according to the backbone architecture of
+#' the datastream.
+#' @param reset logical indicating to reset the \code{MOA_regressor} so that it forgets what it 
+#' already has learned. Defaults to TRUE.
+#' @param trace logical, indicating to show information on how many datastream chunks are already processed
+#' as a \code{message}.
+#' @param options a names list of further options. Currently not used.
+#' @return An object of class MOA_trainedmodel which is a list with elements
+#' \itemize{
+#' \item{model: the updated supplied \code{model} object of class \code{MOA_regressor}}
+#' \item{call: the matched call}
+#' \item{na.action: the vatlue of na.action}
+#' \item{terms: the \code{terms} in the model}
+#' \item{transFUN: the transFUN argument}
+#' }
+#' @seealso \code{\link{MOA_regressor}}, \code{\link{datastream_file}}, \code{\link{datastream_dataframe}}, 
+#' \code{\link{datastream_matrix}}, \code{\link{datastream_ffdf}}, \code{\link{datastream}},
+#' \code{\link{predict.MOA_trainedmodel}}
+#' @export 
+#' @examples
+#' mymodel <- MOA_regressor(model = "FIMTDD")
+#' mymodel
+#' data(iris)
+#' iris <- factorise(iris)
+#' irisdatastream <- datastream_dataframe(data=iris)
+#' irisdatastream$get_points(3)
+#' ## Train the model
+#' mytrainedmodel <- trainMOA(model = mymodel, 
+#'  Sepal.Length ~ Petal.Length + Species, data = irisdatastream)
+#' mytrainedmodel$model
+#' irisdatastream$reset()
+#' mytrainedmodel <- trainMOA(model = mytrainedmodel$model, 
+#'  Sepal.Length ~ Petal.Length + Species, data = irisdatastream, 
+#'  chunksize = 10, reset=FALSE, trace=TRUE)
+#' mytrainedmodel$model 
+trainMOA.MOA_regressor <- function(model, formula, data, subset, na.action=na.exclude, transFUN=identity, chunksize=1000, reset=TRUE, 
+                                   trace=FALSE, options = list(maxruntime = +Inf)){
+  startat <- Sys.time()
+  mc <- match.call()
+  mf <- mc[c(1L, match(c("formula", "data", "subset", "na.action"), names(mc), 0L))]
+  mf[[1L]] <- as.name("model.frame")
+  mf[[3L]] <- as.name("datachunk")
+  mf$drop.unused.levels <- FALSE
+  setmodelcontext <- function(model, data, response){
+    # build the weka instances structure
+    atts <- MOAattributes(data=data)
+    allinstances <- .jnew("weka.core.Instances", "data", atts$columnattributes, 0L)
+    ## Set the response data to predict    
+    .jcall(allinstances, "V", "setClass", attribute(atts, response)$attribute)
+    ## Prepare for usage
+    .jcall(model$moamodel, "V", "setModelContext", .jnew("moa.core.InstancesHeader", allinstances))
+    .jcall(model$moamodel, "V", "prepareForUse")
+    list(model = model, allinstances = allinstances)
+  }
+  trainchunk <- function(model, traindata, allinstances){
+    ## Levels go from 0-nlevels in MOA, while in R from 1:nlevels
+    traindata <- as.train(traindata)
+    ## Loop over the data and train
+    for(j in 1:nrow(traindata)){
+      oneinstance <- .jnew("weka/core/DenseInstance", 1.0, .jarray(as.double(traindata[j, ])))  
+      .jcall(oneinstance, "V", "setDataset", allinstances)
+      oneinstance <- .jcast(oneinstance, "weka/core/Instance")
+      .jcall(model$moamodel, "V", "trainOnInstance", oneinstance)
+    }
+    model
+  }
+  if(reset){
+    .jcall(model$moamodel, "V", "resetLearning") 
+  }  
+  terms <- NULL
+  i <- 1
+  while(!data$isfinished()){
+    if(trace){
+      message(sprintf("%s Running chunk %s: instances %s:%s", Sys.time(), i, (i*chunksize)-chunksize, i*chunksize))
+    }
+    ### Get data of chunk and extract the model.frame
+    datachunk <- data$get_points(chunksize)
+    if(is.null(datachunk)){
+      break
+    }
+    datachunk <- transFUN(datachunk)  
+    traindata <- eval(mf)      
+    if(i == 1){
+      terms <- terms(traindata)
+      ### Set up the data structure in MOA (levels, columns, ...)
+      ct <- setmodelcontext(model=model, data=traindata, response=all.vars(formula)[1])
+      model <- ct$model    
+    }
+    ### Learn the model
+    model <- trainchunk(model = model, traindata = traindata, allinstances = ct$allinstances)  
+    i <- i + 1
+    
+    if("maxruntime" %in% names(options)){
+      if(difftime(Sys.time(), startat, units = "secs") > options$maxruntime){
+        break
+      }
+    }
+  }
+  if(is.null(terms)){
+    terms <- terms(formula)
+  }
+  out <- list()
+  out$model <- model
+  out$call <- mc
+  out$na.action <- attr(mf, "na.action")
+  out$terms <- terms
+  out$transFUN <- transFUN
+  class(out) <- "MOA_trainedmodel"
+  out
+}
 
 
 #' Predict using a MOA classifier on a new dataset
