@@ -6,7 +6,9 @@
   "AccuracyUpdatedEnsemble","AccuracyWeightedEnsemble","ADACC","DACC","LeveragingBag","LimAttClassifier","OCBoost",
   "OnlineAccuracyUpdatedEnsemble","OzaBag","OzaBagAdwin","OzaBagASHT","OzaBoost","OzaBoostAdwin","TemporallyAugmentedClassifier","WeightedMajorityAlgorithm",
   ## regression models
-  "AMRulesRegressor", "FadingTargetMean", "FIMTDD", "ORTO", "Perceptron", "SGD", "TargetMean")
+  "AMRulesRegressor", "FadingTargetMean", "FIMTDD", "ORTO", "Perceptron", "SGD", "TargetMean",
+  ## recommendation models
+  "BRISMFPredictor", "BaselinePredictor")
 
 
 
@@ -48,7 +50,10 @@ modelclass <- function(model){
                    "ORTO", 
                    "Perceptron", 
                    "SGD", 
-                   "TargetMean"),
+                   "TargetMean",
+                   ## recommendation
+                   "BRISMFPredictor", 
+                   "BaselinePredictor"),
           to = c("moa/classifiers/trees/AdaHoeffdingOptionTree",
                  "moa/classifiers/trees/ASHoeffdingTree",
                  "moa/classifiers/trees/DecisionStump",
@@ -82,6 +87,9 @@ modelclass <- function(model){
                  "moa/classifiers/trees/ORTO",
                  "moa/classifiers/rules/functions/Perceptron",
                  "moa/classifiers/functions/SGD",
-                 "moa/classifiers/rules/functions/TargetMean"))
+                 "moa/classifiers/rules/functions/TargetMean",
+                 ## recommendation
+                 "moa/recommender/predictor/BRISMFPredictor",
+                 "moa/recommender/predictor/BaselinePredictor"))
 }
 

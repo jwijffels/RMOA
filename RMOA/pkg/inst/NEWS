@@ -1,4 +1,8 @@
+
+                CHANGES IN RMOA VERSION 1.1
+
+    o    Added streaming recommendation engines
+
                 CHANGES IN RMOA VERSION 1.0
 
-    o    Initial version of the package
-
+    o    Initial version of the package including streaming classification and regression

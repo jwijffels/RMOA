@@ -1,5 +1,5 @@
 Package: RMOA
-Version: 1.0
+Version: 1.1
 Title: Connect R with MOA for Massive Online Analysis
 Authors@R: c(person("Jan", "Wijffels", role = c("aut", "cre"), email =
     "jwijffels@bnosac.be"), person("BNOSAC", role = "cph"))
