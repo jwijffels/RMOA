@@ -1,15 +1,15 @@
-#' Create a MOA classifier
+#' Create a MOA recommendation engine
 #'
-#' Create a MOA classifier
+#' Create a MOA recommendation engine
 #'
 #' @param model character string with a model.
-#' E.g. HoeffdingTree, DecisionStump, NaiveBayes, HoeffdingOptionTree, ...
+#' E.g. BRISMFPredictor, BaselinePredictor
 #' The list of known models can be obtained by typing RMOA:::.moaknownmodels. 
 #' See the examples and \code{\link{MOAoptions}}.
 #' @param control an object of class \code{MOAmodelOptions} as obtained by calling \code{\link{MOAoptions}}
 #' @param ... options of parameters passed on to \code{\link{MOAoptions}}, in case \code{control} is left to NULL. 
 #' Ignored if \code{control} is supplied
-#' @return An object of class \code{MOA_classifier}
+#' @return An object of class \code{MOA_recommender}
 #' @seealso \code{\link{MOAoptions}}
 #' @export 
 #' @examples
