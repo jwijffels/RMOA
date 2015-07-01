@@ -47,6 +47,16 @@ Classification models which are possible through RMOA are:
       + TemporallyAugmentedClassifier
       + WeightedMajorityAlgorithm
       
+Streaming regression models are also included namely
+
+  * FIMTDD
+  * AMRulesRegressor
+  
+Streaming recommendation engines are available namely
+
+  * BaselinePredictor
+  * BRISMFPredictor
+      
       
 Installation
 -----------
@@ -106,6 +116,13 @@ str(scores)
 table(scores, iris$Species)
 scores <- predict(mymodel, newdata=iris, type="votes")
 head(scores)
+
+
+##
+## Streaming regressions and streaming recommendation engines. Examples can be found in the documentation
+##
+?trainMOA.MOA_regressor
+?trainMOA.MOA_recommender
 ```
 
 Streams
@@ -121,10 +138,8 @@ TODO
 
 Currently the following MOA models are not (yet) implemented in RMOA.
 - Multilabel, drift, functions, rules classifiers
-- Regression
 - Outlier detection
 - Clustering
-- Recommendation engines
 
 
 
