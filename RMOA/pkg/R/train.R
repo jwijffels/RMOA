@@ -511,7 +511,17 @@ predict.MOA_trainedmodel <- function(object, newdata, type="response", transFUN=
       oneinstance <- .jnew("weka/core/DenseInstance", 1.0, .jarray(as.double(newdata[j, ])))  
       .jcall(oneinstance, "V", "setDataset", allinstances)
       oneinstance <- .jcast(oneinstance, "weka/core/Instance")
-      scores[j, ] <- object$moamodel$getVotesForInstance(oneinstance)
+      if(inherits(object, "MOA_classifier")){
+        onescore <- object$moamodel$getVotesForInstance(oneinstance)
+        nrofclasses <- length(columnnames$responselevels)
+        if(length(onescore) < nrofclasses){
+          ## Fix for https://groups.google.com/forum/#!topic/moa-users/xkDG6p15FIM
+          onescore <- c(onescore, rep(0L, nrofclasses - length(onescore)))
+        }
+        scores[j, ] <- onescore
+      }else if(inherits(object, "MOA_regressor")){
+        scores[j, ] <- object$moamodel$getVotesForInstance(oneinstance)
+      }        
     }
     if(inherits(object, "MOA_classifier")){
       if(type == "votes"){
