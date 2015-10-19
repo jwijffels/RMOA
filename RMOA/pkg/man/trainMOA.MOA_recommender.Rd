@@ -45,7 +45,7 @@ An object of class MOA_trainedmodel which is a list with elements
 \itemize{
 \item{model: the updated supplied \code{model} object of class \code{MOA_recommender}}
 \item{call: the matched call}
-\item{na.action: the vatlue of na.action}
+\item{na.action: the value of na.action}
 \item{terms: the \code{terms} in the model}
 \item{transFUN: the transFUN argument}
 }
