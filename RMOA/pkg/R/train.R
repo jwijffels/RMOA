@@ -46,7 +46,7 @@ trainMOA <- function(model, ...){
 #' \itemize{
 #' \item{model: the updated supplied \code{model} object of class \code{MOA_classifier}}
 #' \item{call: the matched call}
-#' \item{na.action: the vatlue of na.action}
+#' \item{na.action: the value of na.action}
 #' \item{terms: the \code{terms} in the model}
 #' \item{transFUN: the transFUN argument}
 #' }
@@ -178,7 +178,7 @@ trainMOA.MOA_classifier <- function(model, formula, data, subset, na.action=na.e
 #' \itemize{
 #' \item{model: the updated supplied \code{model} object of class \code{MOA_regressor}}
 #' \item{call: the matched call}
-#' \item{na.action: the vatlue of na.action}
+#' \item{na.action: the value of na.action}
 #' \item{terms: the \code{terms} in the model}
 #' \item{transFUN: the transFUN argument}
 #' }
@@ -309,7 +309,7 @@ trainMOA.MOA_regressor <- function(model, formula, data, subset, na.action=na.ex
 #' \itemize{
 #' \item{model: the updated supplied \code{model} object of class \code{MOA_recommender}}
 #' \item{call: the matched call}
-#' \item{na.action: the vatlue of na.action}
+#' \item{na.action: the value of na.action}
 #' \item{terms: the \code{terms} in the model}
 #' \item{transFUN: the transFUN argument}
 #' }
@@ -413,6 +413,7 @@ trainMOA.MOA_recommender <- function(model, formula, data, subset, na.action=na.
 #' Useful if you want to change the results \code{get_points} on the datastream 
 #' (e.g. for making sure the factor levels are the same in each chunk of processing, some data cleaning, ...). 
 #' Defaults to \code{transFUN} available in \code{object}.
+#' @param na.action passed on to model.frame when constructing the model.matrix from \code{newdata}. Defaults to \code{na.fail}.
 #' @param ... other arguments, currently not used yet
 #' @return A matrix of votes or a vector with the predicted class for MOA classifier or MOA regressor.
 #' A 
@@ -467,12 +468,12 @@ trainMOA.MOA_recommender <- function(model, formula, data, subset, na.action=na.
 #' 
 #' x <- expand.grid(userid=overview$users[1:10], itemid=overview$items)
 #' predict(mymodel, x, type = "response")
-predict.MOA_trainedmodel <- function(object, newdata, type="response", transFUN=object$transFUN, ...){ 
+predict.MOA_trainedmodel <- function(object, newdata, type="response", transFUN=object$transFUN, na.action = na.fail, ...){ 
   if(inherits(object, "MOA_recommender")){
     ## Apply transFUN and model.frame
     newdata <- transFUN(newdata)
     Terms <- delete.response(object$terms)
-    newdata <- model.frame(Terms, newdata)
+    newdata <- model.frame(Terms, newdata, na.action = na.action)
     newdata$rating <- apply(newdata, MARGIN=1, FUN=function(x){
       .jcall(object$model$moamodel, returnSig = "D", "predictRating", x[1], x[2])
     })
@@ -486,7 +487,7 @@ predict.MOA_trainedmodel <- function(object, newdata, type="response", transFUN=
     ## Apply transFUN and model.frame
     newdata <- transFUN(newdata)
     Terms <- delete.response(object$terms)
-    newdata <- model.frame(Terms, newdata)
+    newdata <- model.frame(Terms, newdata, na.action = na.action)
     
     object <- object$model
     columnnames <- fields(object)

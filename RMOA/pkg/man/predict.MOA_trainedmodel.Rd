@@ -5,7 +5,7 @@
 \title{Predict using a MOA classifier, MOA regressor or MOA recommender on a new dataset}
 \usage{
 \method{predict}{MOA_trainedmodel}(object, newdata, type = "response",
-  transFUN = object$transFUN, ...)
+  transFUN = object$transFUN, na.action = na.fail, ...)
 }
 \arguments{
 \item{object}{an object of class \code{MOA_trainedmodel}, as returned by \code{\link{trainMOA}}}
@@ -21,6 +21,8 @@ before applying \code{\link{model.frame}}.
 Useful if you want to change the results \code{get_points} on the datastream
 (e.g. for making sure the factor levels are the same in each chunk of processing, some data cleaning, ...).
 Defaults to \code{transFUN} available in \code{object}.}
+
+\item{na.action}{passed on to model.frame when constructing the model.matrix from \code{newdata}. Defaults to \code{na.fail}.}
 
 \item{...}{other arguments, currently not used yet}
 }
