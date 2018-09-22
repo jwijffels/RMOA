@@ -1,3 +1,7 @@
+                CHANGES IN RMOAjars VERSION 1.0.1
+
+    o    Fix R CMD check note regarding Malformed Description field: should contain one or more complete sentences.
+
                 CHANGES IN RMOAjars VERSION 1.0
 
     o    Initial version of the package, using MOA release 2014.04
