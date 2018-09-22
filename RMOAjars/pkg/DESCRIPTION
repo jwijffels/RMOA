@@ -1,10 +1,10 @@
 Package: RMOAjars
 Version: 1.0.1
-Title: External jars required for package RMOA
+Title: External jars Required for Package RMOA
 Author: See file AUTHORS
 Description: External jars required for package RMOA. RMOA is a framework to
     build data stream models on top of MOA (Massive Online Analysis -
-    http://moa.cms.waikato.ac.nz). The jar files are put in this R package, the modelling logic can be found in the RMOA package.
+    <http://moa.cms.waikato.ac.nz>). The jar files are put in this R package, the modelling logic can be found in the RMOA package.
 Depends:
     R (>= 2.6.0)
 Imports:
