@@ -1,8 +1,9 @@
 
-                CHANGES IN RMOA VERSION 1.1
+                CHANGES IN RMOA VERSION 1.0.1
 
     o    Added streaming recommendation engines
     o    Fix issue if getvotesforinstance does not return expected length https://groups.google.com/forum/#!topic/moa-users/xkDG6p15FIM
+    o    Fix R CMD check note regarding Malformed Description field: should contain one or more complete sentences and importing functions from stats package
 
                 CHANGES IN RMOA VERSION 1.0
 

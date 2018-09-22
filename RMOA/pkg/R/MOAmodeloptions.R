@@ -117,8 +117,9 @@ setMOAoptions <- function(x, ...){
   
   alloptions <- x$getOptionArray()
   for(i in seq_along(alloptions)){
-    optionname <- .jcall(alloptions[[i]], "S", "getName")
-    if(optionname %in% names(params)){
+    optionname <- try(.jcall(alloptions[[i]], "S", "getName"), silent = TRUE)
+    if(inherits(optionname, "try-error")) next
+    if(optionname %in% names(params) && optionname %in% names(done) && identical(FALSE, done[[optionname]])){
       value <- params[[optionname]]
       if(identical(TRUE, value) || identical(FALSE, value)){
         value <- tolower(as.character(value))

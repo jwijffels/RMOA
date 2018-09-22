@@ -126,6 +126,11 @@ datastream$methods(
 #'  file = myfile, header=TRUE, na.strings="")
 #' x$get_points(n=10)
 #' x
+#' x$stop()
+#' 
+#' 
+#' ## Clean up for CRAN
+#' file.remove(myfile)
 datastream_file <- setRefClass(Class="datastream_file", 
                           fields = list(connection = "ANY", FUN="function", columnnames = "character", file = "ANY"),
                           contains = "datastream")
