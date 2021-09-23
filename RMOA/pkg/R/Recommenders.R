@@ -117,9 +117,9 @@ summary.MOA_recommender <- function(object, ...){
     out$nr.rating <- x$getNumRatings()
     out$rating.range <- c(x$getMinRating(), x$getMaxRating())
     out$rating.globalmean <- x$getGlobalMean() 
-    out$users <- x$getItems()$toArray()
+    out$users <- x$getItems()
     out$users <- sapply(out$users, FUN=function(item) .jcall(item, returnSig="I", method = "intValue", check=FALSE, use.true.class = FALSE))
-    out$items <- x$getUsers()$toArray()
+    out$items <- x$getUsers()
     out$items <- sapply(out$items, FUN=function(item) .jcall(item, returnSig="I", method = "intValue", check=FALSE, use.true.class = FALSE))
   }
   class(out) <- "summary_MOA_recommender"

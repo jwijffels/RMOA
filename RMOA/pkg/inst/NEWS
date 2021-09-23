@@ -1,4 +1,11 @@
+                CHANGES IN RMOA VERSION 1.0.2
 
+    o    Fix summary.MOA_recommender for Java 17 as indicated in R CMD check on M1mac (removed toArray), which showed the following error
+    
+          Error in .jcall("RJavaTools", "Ljava/lang/Object;", "invokeMethod", cl,  : 
+             java.lang.reflect.InaccessibleObjectException: Unable to make public java.lang.Object[] java.util.HashMap$KeySet.toArray() accessible: module java.base does not "opens java.util"       to unnamed module @1f36e637
+          Calls: summary ... summary.MOA_recommender -> <Anonymous> -> .jrcall -> .jcall -> .jcheck
+    
                 CHANGES IN RMOA VERSION 1.0.1
 
     o    Added streaming recommendation engines
