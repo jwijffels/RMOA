@@ -81,11 +81,11 @@ trainMOA.MOA_classifier <- function(model, formula, data, subset, na.action=na.e
   setmodelcontext <- function(model, data, response){
     # build the weka instances structure
     atts <- MOAattributes(data=data)
-    allinstances <- .jnew("weka.core.Instances", "data", atts$columnattributes, 0L)
+    allinstances <- .jnew("weka.core.Instances", "data", atts$columnattributes, 0L, class.loader=.rJava.class.loader)
     ## Set the response data to predict    
     .jcall(allinstances, "V", "setClass", attribute(atts, response)$attribute)
     ## Prepare for usage
-    .jcall(model$moamodel, "V", "setModelContext", .jnew("moa.core.InstancesHeader", allinstances))
+    .jcall(model$moamodel, "V", "setModelContext", .jnew("moa.core.InstancesHeader", allinstances, class.loader=.rJava.class.loader))
     .jcall(model$moamodel, "V", "prepareForUse")
     list(model = model, allinstances = allinstances)
   }
@@ -94,7 +94,7 @@ trainMOA.MOA_classifier <- function(model, formula, data, subset, na.action=na.e
     traindata <- as.train(traindata)
     ## Loop over the data and train
     for(j in 1:nrow(traindata)){
-      oneinstance <- .jnew("weka/core/DenseInstance", 1.0, .jarray(as.double(traindata[j, ])))  
+      oneinstance <- .jnew("weka/core/DenseInstance", 1.0, .jarray(as.double(traindata[j, ])), class.loader=.rJava.class.loader)  
       .jcall(oneinstance, "V", "setDataset", allinstances)
       oneinstance <- .jcast(oneinstance, "weka/core/Instance")
       .jcall(model$moamodel, "V", "trainOnInstance", oneinstance)
@@ -213,11 +213,11 @@ trainMOA.MOA_regressor <- function(model, formula, data, subset, na.action=na.ex
   setmodelcontext <- function(model, data, response){
     # build the weka instances structure
     atts <- MOAattributes(data=data)
-    allinstances <- .jnew("weka.core.Instances", "data", atts$columnattributes, 0L)
+    allinstances <- .jnew("weka.core.Instances", "data", atts$columnattributes, 0L, class.loader=.rJava.class.loader)
     ## Set the response data to predict    
     .jcall(allinstances, "V", "setClass", attribute(atts, response)$attribute)
     ## Prepare for usage
-    .jcall(model$moamodel, "V", "setModelContext", .jnew("moa.core.InstancesHeader", allinstances))
+    .jcall(model$moamodel, "V", "setModelContext", .jnew("moa.core.InstancesHeader", allinstances, class.loader=.rJava.class.loader))
     .jcall(model$moamodel, "V", "prepareForUse")
     list(model = model, allinstances = allinstances)
   }
@@ -226,7 +226,7 @@ trainMOA.MOA_regressor <- function(model, formula, data, subset, na.action=na.ex
     traindata <- as.train(traindata)
     ## Loop over the data and train
     for(j in 1:nrow(traindata)){
-      oneinstance <- .jnew("weka/core/DenseInstance", 1.0, .jarray(as.double(traindata[j, ])))  
+      oneinstance <- .jnew("weka/core/DenseInstance", 1.0, .jarray(as.double(traindata[j, ])), class.loader=.rJava.class.loader)  
       .jcall(oneinstance, "V", "setDataset", allinstances)
       oneinstance <- .jcast(oneinstance, "weka/core/Instance")
       .jcall(model$moamodel, "V", "trainOnInstance", oneinstance)
@@ -500,7 +500,7 @@ predict.MOA_trainedmodel <- function(object, newdata, type="response", transFUN=
     newdata <- as.train(newdata[, columnnames$attribute.names, drop = FALSE])
     
     atts <- MOAattributes(data=newdata)
-    allinstances <- .jnew("weka.core.Instances", "data", atts$columnattributes, 0L)
+    allinstances <- .jnew("weka.core.Instances", "data", atts$columnattributes, 0L, class.loader=.rJava.class.loader)
     .jcall(allinstances, "V", "setClass", attribute(atts, columnnames$response)$attribute)
     
     if(inherits(object, "MOA_classifier")){
@@ -509,7 +509,7 @@ predict.MOA_trainedmodel <- function(object, newdata, type="response", transFUN=
       scores <- matrix(nrow = nrow(newdata), ncol = 1)
     }  
     for(j in 1:nrow(newdata)){
-      oneinstance <- .jnew("weka/core/DenseInstance", 1.0, .jarray(as.double(newdata[j, ])))  
+      oneinstance <- .jnew("weka/core/DenseInstance", 1.0, .jarray(as.double(newdata[j, ])), class.loader=.rJava.class.loader)  
       .jcall(oneinstance, "V", "setDataset", allinstances)
       oneinstance <- .jcast(oneinstance, "weka/core/Instance")
       if(inherits(object, "MOA_classifier")){

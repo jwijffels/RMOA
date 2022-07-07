@@ -24,7 +24,7 @@ MOAattributes.data.frame <- function(data, ...){
   }
   
   nrattributes <- as.integer(ncol(data))
-  attributes <- .jnew("java.util.ArrayList", nrattributes)
+  attributes <- .jnew("java.util.ArrayList", nrattributes, class.loader=.rJava.class.loader)
   levs <- list()
   allattributes <- list()
   for(attr in names(data)){    
@@ -35,9 +35,9 @@ MOAattributes.data.frame <- function(data, ...){
       levs[[attr]] <- character(0)
     }    
     if(inherits(data[[attr]], "factor")){
-      att <- .jnew("weka/core/Attribute", attr, as.java.util.List(alllevels))
+      att <- .jnew("weka/core/Attribute", attr, as.java.util.List(alllevels), class.loader=.rJava.class.loader)
     }else{
-      att <- .jnew("weka/core/Attribute", attr)      
+      att <- .jnew("weka/core/Attribute", attr, class.loader=.rJava.class.loader)      
     }
     attributes$add(att)
     allattributes[[attr]] <- att
@@ -63,7 +63,7 @@ attribute.MOAmodelAttributes <- function(x, value){
 ## Create a java.util.List from a vector
 ## @param x a vector (of characters e.g.)
 as.java.util.List <- function(x){
-  l <- .jnew("java.util.ArrayList", as.integer(length(x)))
+  l <- .jnew("java.util.ArrayList", as.integer(length(x)), class.loader=.rJava.class.loader)
   done <- sapply(seq_along(x), FUN=function(i) l$add(i-1L, x[i]))  
   .jcast(l, "java.util.List")
 }

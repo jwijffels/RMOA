@@ -70,7 +70,7 @@
 #' MOAoptions(model = "BaselinePredictor")
 MOAoptions <- function(model, ...){
   if(inherits(model, "character")){
-    moamodel <- .jnew(modelclass(model))  
+    moamodel <- .jnew(modelclass(model), class.loader=.rJava.class.loader)  
   }else{
     moamodel <- model$moamodel
     model <- model$type

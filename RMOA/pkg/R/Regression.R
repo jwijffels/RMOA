@@ -30,7 +30,7 @@ MOA_regressor <- function(model, control=NULL, ...){
   class(out) <- c(model, "MOA_regressor", "MOA_model")
   out$type <- model
   ## Create the model
-  out$moamodel <- .jnew(modelclass(out$type))  
+  out$moamodel <- .jnew(modelclass(out$type), class.loader=.rJava.class.loader)  
   ## Set MOA options
   if(inherits(control, "MOAmodelOptions")){
     if(control$model != out$type){
